@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>💖 Cutie Calc</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    background: #ffffff;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+
+  .app {
+    width: 100%; max-width: 380px;
+    background: #ffffff;
+    border: 3px solid #ffb6c1;
+    border-radius: 32px;
+    box-shadow: 0 12px 30px rgba(255, 182, 193, 0.35);
+    padding: 28px 22px 22px;
+  }
+
+  .bow {
+    font-size: 72px;
+    text-align: center;
+    line-height: 1;
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 4px 6px rgba(255, 150, 180, 0.35));
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-6px) rotate(3deg); }
+  }
+
+  .title {
+    text-align: center;
+    font-size: 20px;
+    color: #d63384;
+    margin-top: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+  }
+
+  .display {
+    margin: 18px 0 4px;
+    background: #ffffff;
+    border: 2px solid #ffcce0;
+    border-radius: 22px;
+    padding: 18px 20px;
+    text-align: right;
+    min-height: 90px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    box-shadow: 0 2px 10px rgba(255, 182, 210, 0.2);
+  }
+  .expression {
+    font-size: 16px;
+    color: #4a2025;
+    min-height: 20px;
+    word-break: break-all;
+    margin-bottom: 4px;
+  }
+  .result {
+    font-size: 38px;
+    font-weight: 700;
+    color: #000000;
+    word-break: break-all;
+    display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+    text-shadow: 0 0 1px rgba(214, 51, 132, 0.25);
+  }
+  .heart {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    animation: heartbeat 1.2s ease-in-out infinite;
+    filter: drop-shadow(0 0 4px rgba(255, 100, 150, 0.5));
+  }
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.25); }
+    50% { transform: scale(1); }
+    75% { transform: scale(1.15); }
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  button {
+    appearance: none;
+    border: none;
+    font-size: 22px;
+    font-weight: 500;
+    border-radius: 18px;
+    padding: 18px 0;
+    cursor: pointer;
+    transition: transform 0.08s, filter 0.08s;
+    user-select: none;
+    -webkit-user-select: none;
+    color: #fff;
+    min-height: 62px;
+  }
+  button:active { transform: scale(0.94); filter: brightness(0.94); }
+
+  .num {
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid #ffd1dc;
+    box-shadow: 0 3px 0 #ffc2d4;
+  }
+  .op {
+    background: #ff85a7;
+    color: #000000;
+    border: 2px solid #ff4d85;
+    box-shadow: 0 3px 0 #e06b8e;
+    font-weight: 600;
+  }
+  .sys {
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid #ffd1dc;
+    box-shadow: 0 3px 0 #ffc2d4;
+    font-weight: 600;
+    font-size: 18px;
+  }
+  .eq {
+    background: #ffffff;
+    color: #e61f6b;
+    border: 2px solid #ff4d85;
+    box-shadow: 0 3px 0 #ff85a7;
+    font-weight: 700;
+    font-size: 26px;
+  }
+  .zero { grid-column: span 2; }
+
+  .caret {
+    font-size: 12px;
+    text-align: center;
+    color: #e89db3;
+    margin-top: 14px;
+    letter-spacing: 0.3px;
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <div class="bow">🎀</div>
+    <div class="title">my cutie calculator</div>
+
+    <div class="display">
+      <div class="expression" id="expression"></div>
+      <div class="result" id="result">
+        <span id="value">0</span>
+        <span class="heart" id="heart" style="display:none;">💖</span>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button class="sys" data-action="clear">AC</button>
+      <button class="sys" data-action="back">⌫</button>
+      <button class="sys" data-action="percent">%</button>
+      <button class="op" data-action="op" data-value="/">÷</button>
+
+      <button class="num" data-action="num" data-value="7">7</button>
+      <button class="num" data-action="num" data-value="8">8</button>
+      <button class="num" data-action="num" data-value="9">9</button>
+      <button class="op" data-action="op" data-value="*">×</button>
+
+      <button class="num" data-action="num" data-value="4">4</button>
+      <button class="num" data-action="num" data-value="5">5</button>
+      <button class="num" data-action="num" data-value="6">6</button>
+      <button class="op" data-action="op" data-value="-">−</button>
+
+      <button class="num" data-action="num" data-value="1">1</button>
+      <button class="num" data-action="num" data-value="2">2</button>
+      <button class="num" data-action="num" data-value="3">3</button>
+      <button class="op" data-action="op" data-value="+">+</button>
+
+      <button class="num zero" data-action="num" data-value="0">0</button>
+      <button class="num" data-action="dot">.</button>
+      <button class="eq" data-action="equals">=</button>
+    </div>
+
+    <div class="caret">made with ♡ for you</div>
+  </div>
+
+<script>
+  const valueEl = document.getElementById('value');
+  const exprEl = document.getElementById('expression');
+  const heartEl = document.getElementById('heart');
+
+  let current = '0';
+  let previous = '';
+  let operator = null;
+  let overwrite = false;
+
+  function format(n) {
+    const s = String(n);
+    if (s.length > 12) {
+      return Number(n).toLocaleString('en-US', { maximumFractionDigits: 6 });
+    }
+    return s;
+  }
+
+  function update() {
+    valueEl.textContent = format(current);
+    exprEl.textContent = previous ? `${previous} ${operator||''}` : '';
+    if (current !== '0' && !isNaN(current)) {
+      heartEl.style.display = 'inline-flex';
+    } else {
+      heartEl.style.display = 'none';
+    }
+  }
+
+  function inputDigit(d) {
+    if (overwrite || current === '0') { current = d; overwrite = false; }
+    else { current = current + d; }
+    update();
+  }
+
+  function inputDot() {
+    if (overwrite) { current = '0.'; overwrite = false; update(); return; }
+    if (!current.includes('.')) { current = current + '.'; }
+    update();
+  }
+
+  function inputOp(op) {
+    if (operator && !overwrite) calculate();
+    previous = current;
+    operator = op;
+    overwrite = true;
+    update();
+  }
+
+  function calculate() {
+    if (!operator || previous === '' || current === '') return;
+    const a = parseFloat(previous);
+    const b = parseFloat(current);
+    let res;
+    switch (operator) {
+      case '+': res = a + b; break;
+      case '-': res = a - b; break;
+      case '*': res = a * b; break;
+      case '/': res = b === 0 ? '💔' : a / b; break;
+    }
+    current = typeof res === 'number'
+      ? (Number.isInteger(res) ? String(res) : String(parseFloat(res.toFixed(8))))
+      : res;
+    exprEl.textContent = `${previous} ${operator} ${b} =`;
+    operator = null;
+    previous = '';
+    overwrite = true;
+    update();
+  }
+
+  document.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const act = btn.dataset.action;
+      const val = btn.dataset.value;
+      if (act === 'num') inputDigit(val);
+      else if (act === 'op') inputOp(val);
+      else if (act === 'dot') inputDot();
+      else if (act === 'equals') calculate();
+      else if (act === 'clear') { current = '0'; previous = ''; operator = null; overwrite = false; update(); }
+      else if (act === 'back') {
+        if (current === '💔' || current.length <= 1) { current = '0'; }
+        else { current = current.slice(0, -1); }
+        update();
+      }
+      else if (act === 'percent') {
+        const n = parseFloat(current);
+        current = String(n / 100);
+        update();
+      }
+    });
+  });
+
+  // Keyboard support for laptop use
+  document.addEventListener('keydown', (e) => {
+    if (e.key >= '0' && e.key <= '9') inputDigit(e.key);
+    else if (e.key === '.') inputDot();
+    else if (['+', '-', '*', '/'].includes(e.key)) inputOp(e.key);
+    else if (e.key === 'Enter' || e.key === '=') calculate();
+    else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
+      current = '0'; previous = ''; operator = null; overwrite = false; update();
+    }
+    else if (e.key === 'Backspace') {
+      if (current === '💔' || current.length <= 1) current = '0';
+      else current = current.slice(0, -1);
+      update();
+    }
+  });
+
+  update();
+</script>
+</body>
+</html>
