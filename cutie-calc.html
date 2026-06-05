@@ -6,241 +6,397 @@
 <title>💖 Cutie Calc</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; }
+  html, body { height: 100%; overflow-x: hidden; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-    background: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    background: #f8f4f7;
     min-height: 100vh;
     display: flex; align-items: center; justify-content: center;
-    padding: 20px;
+    padding: 16px;
+    transition: background 0.5s ease;
+    position: relative;
+  }
+
+  /* Ambient floating sparkle */
+  .sparkle {
+    position: fixed;
+    pointer-events: none;
+    animation: sparkleFloat linear infinite;
+    opacity: 0;
+    z-index: 0;
+  }
+  @keyframes sparkleFloat {
+    0%   { transform: translateY(110vh) rotate(0deg) scale(0.5); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.6; }
+    100% { transform: translateY(-10vh) rotate(360deg) scale(1); opacity: 0; }
   }
 
   .app {
+    position: relative;
+    z-index: 1;
     width: 100%; max-width: 380px;
-    background: #ffffff;
-    border: 3px solid #ffb6c1;
-    border-radius: 32px;
-    box-shadow: 0 12px 30px rgba(255, 182, 193, 0.35);
-    padding: 28px 22px 22px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(40px) saturate(160%);
+    -webkit-backdrop-filter: blur(40px) saturate(160%);
+    border-radius: 40px;
+    padding: 28px 22px 24px;
+    box-shadow:
+      0 20px 60px rgba(220, 140, 170, 0.25),
+      0 0 0 1px rgba(255, 182, 193, 0.4),
+      inset 0 1px 0 rgba(255,255,255,0.9);
+    animation: appAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes appAppear {
+    0%   { transform: scale(0.85) translateY(30px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  /* Animated gradient shimmer on border */
+  .app::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 42px;
+    padding: 2px;
+    background: linear-gradient(135deg, #ff9aaf, #ffc9de, #ffd1dc, #ffb6c1, #ff9aaf);
+    background-size: 400% 400%;
+    animation: borderShimmer 8s ease infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: -1;
+  }
+  @keyframes borderShimmer {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
   .bow {
-    font-size: 72px;
-    text-align: center;
-    line-height: 1;
-    animation: float 3s ease-in-out infinite;
-    filter: drop-shadow(0 4px 6px rgba(255, 150, 180, 0.35));
+    font-size: 72px; text-align: center; line-height: 1;
+    animation: float 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    filter: drop-shadow(0 6px 12px rgba(255, 140, 180, 0.45));
+    display: inline-block;
   }
   @keyframes float {
-    0%, 100% { transform: translateY(0) rotate(-3deg); }
-    50% { transform: translateY(-6px) rotate(3deg); }
+    0%, 100% { transform: translateY(0) rotate(-4deg); }
+    50% { transform: translateY(-10px) rotate(4deg); }
   }
 
   .title {
-    text-align: center;
-    font-size: 20px;
-    color: #d63384;
-    margin-top: 8px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+    text-align: center; font-size: 18px;
+    color: #c0266c; margin-top: 10px; font-weight: 600;
+    letter-spacing: 0.8px; text-transform: lowercase;
+    opacity: 0.85;
   }
 
   .display {
-    margin: 18px 0 4px;
-    background: #ffffff;
-    border: 2px solid #ffcce0;
-    border-radius: 22px;
-    padding: 18px 20px;
+    margin: 20px 0 6px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1.5px solid rgba(255, 182, 210, 0.5);
+    border-radius: 24px;
+    padding: 20px 22px;
     text-align: right;
-    min-height: 90px;
+    min-height: 100px;
     display: flex; flex-direction: column; justify-content: flex-end;
-    box-shadow: 0 2px 10px rgba(255, 182, 210, 0.2);
+    box-shadow: 0 4px 20px rgba(255, 160, 190, 0.15), inset 0 1px 0 rgba(255,255,255,0.8);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
   }
   .expression {
-    font-size: 16px;
-    color: #4a2025;
-    min-height: 20px;
-    word-break: break-all;
+    font-size: 16px; color: #9d4c63;
+    min-height: 22px; word-break: break-all;
     margin-bottom: 4px;
+    transition: all 0.2s ease;
+    opacity: 0.75;
   }
   .result {
-    font-size: 38px;
-    font-weight: 700;
-    color: #000000;
-    word-break: break-all;
-    display: flex; align-items: center; justify-content: flex-end; gap: 8px;
-    text-shadow: 0 0 1px rgba(214, 51, 132, 0.25);
+    font-size: 42px; font-weight: 700;
+    color: #000; word-break: break-all;
+    display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: right center;
   }
+  .result.pop {
+    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes popIn {
+    0%   { transform: scale(0.8); opacity: 0; }
+    60%  { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
   .heart {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
+    display: inline-flex; font-size: 30px;
+    filter: drop-shadow(0 0 8px rgba(255, 100, 150, 0.6));
     animation: heartbeat 1.2s ease-in-out infinite;
-    filter: drop-shadow(0 0 4px rgba(255, 100, 150, 0.5));
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+  .heart.burst {
+    animation: heartBurst 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  @keyframes heartBurst {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(1.6); color: #ff0050; }
+    100% { transform: scale(1.2); }
   }
   @keyframes heartbeat {
     0%, 100% { transform: scale(1); }
-    25% { transform: scale(1.25); }
-    50% { transform: scale(1); }
-    75% { transform: scale(1.15); }
+    20%  { transform: scale(1.25); }
+    40%  { transform: scale(1); }
+    60%  { transform: scale(1.18); }
+    80%  { transform: scale(1); }
   }
 
   .buttons {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-top: 14px;
+    gap: 11px; margin-top: 16px;
   }
 
   button {
     appearance: none;
     border: none;
-    font-size: 22px;
-    font-weight: 500;
-    border-radius: 18px;
-    padding: 18px 0;
+    font-size: 22px; font-weight: 500;
+    border-radius: 22px;
+    padding: 20px 0;
     cursor: pointer;
-    transition: transform 0.08s, filter 0.08s;
+    color: #fff;
+    min-height: 68px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+                filter 0.2s ease,
+                box-shadow 0.2s ease;
     user-select: none;
     -webkit-user-select: none;
-    color: #fff;
-    min-height: 62px;
+    font-family: inherit;
   }
-  button:active { transform: scale(0.94); filter: brightness(0.94); }
+  button:active {
+    transform: scale(0.92);
+    filter: brightness(0.92);
+  }
+
+  /* Ripple */
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple 0.7s ease-out forwards;
+    pointer-events: none;
+    background: rgba(255, 255, 255, 0.5);
+  }
+  @keyframes ripple {
+    to { transform: scale(4); opacity: 0; }
+  }
 
   .num {
-    background: #ffffff;
-    color: #000000;
+    background: #ffffff; color: #000;
     border: 2px solid #ffd1dc;
-    box-shadow: 0 3px 0 #ffc2d4;
+    box-shadow: 0 4px 0 #ffc2d4, 0 6px 18px rgba(255, 180, 200, 0.25);
   }
+  .num:hover { background: #fff5f8; }
+
   .op {
-    background: #ff85a7;
-    color: #000000;
-    border: 2px solid #ff4d85;
-    box-shadow: 0 3px 0 #e06b8e;
-    font-weight: 600;
+    background: linear-gradient(145deg, #ff85a7, #ff4d85);
+    color: #1a0510;
+    border: 2px solid #ff2268;
+    box-shadow: 0 4px 0 #c91b55, 0 6px 18px rgba(255, 80, 130, 0.35);
+    font-weight: 650;
   }
+  .op:hover { background: linear-gradient(145deg, #ff7a9e, #ff4070); }
+
   .sys {
-    background: #ffffff;
-    color: #000000;
-    border: 2px solid #ffd1dc;
-    box-shadow: 0 3px 0 #ffc2d4;
-    font-weight: 600;
-    font-size: 18px;
+    background: #fff; color: #b83a64;
+    border: 2px solid #ffe5ec;
+    box-shadow: 0 4px 0 #ffd6e0, 0 4px 14px rgba(255, 170, 200, 0.2);
+    font-weight: 650; font-size: 18px;
   }
+  .sys:hover { background: #fff5f9; }
+
   .eq {
-    background: #ffffff;
-    color: #e61f6b;
-    border: 2px solid #ff4d85;
-    box-shadow: 0 3px 0 #ff85a7;
-    font-weight: 700;
-    font-size: 26px;
+    background: linear-gradient(145deg, #ff2d6a, #d91a50);
+    color: #fff;
+    border: 2px solid #ff4081;
+    box-shadow: 0 4px 0 #a3002f, 0 6px 20px rgba(255, 45, 106, 0.5);
+    font-weight: 800; font-size: 28px;
   }
+  .eq:hover { background: linear-gradient(145deg, #ff4070, #e81555); }
   .zero { grid-column: span 2; }
 
+  /* Confetti canvas */
+  #confetti-canvas {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 10;
+  }
+
   .caret {
-    font-size: 12px;
-    text-align: center;
-    color: #e89db3;
-    margin-top: 14px;
-    letter-spacing: 0.3px;
+    font-size: 11px; text-align: center;
+    color: #e89db3; margin-top: 16px;
+    letter-spacing: 0.4px; opacity: 0.75;
+  }
+
+  /* Dark mode */
+  @media (prefers-color-scheme: dark) {
+    body { background: linear-gradient(135deg, #1c111a, #1e1522, #231520); }
+    .app {
+      background: rgba(45, 25, 40, 0.85);
+      box-shadow: 0 20px 60px rgba(150, 40, 80, 0.3), 0 0 0 1px rgba(220, 100, 150, 0.35);
+    }
+    .display {
+      background: rgba(60, 30, 50, 0.6);
+      border-color: rgba(220, 140, 170, 0.3);
+      box-shadow: 0 4px 20px rgba(180, 50, 100, 0.25), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .num { background: rgba(80, 50, 70, 0.5); color: #fff; border-color: rgba(255,160,190,0.3); box-shadow: 0 4px 0 rgba(60,30,55,0.8), 0 6px 18px rgba(200,80,140,0.3); }
+    .num:hover { background: rgba(90, 55, 80, 0.6); }
+    .op { background: linear-gradient(145deg, #d14278, #a81a4a); border-color: #8a0f38; box-shadow: 0 4px 0 #6d0d2e, 0 6px 18px rgba(220, 40, 100, 0.45); color: #fff; }
+    .sys { background: rgba(80, 50, 70, 0.5); color: #ffa3c4; border-color: rgba(255,160,190,0.2); box-shadow: 0 4px 0 rgba(60,30,55,0.8); }
+    .eq { background: linear-gradient(145deg, #e81c5a, #b5003a); color: #fff; border-color: #8a0028; box-shadow: 0 4px 0 #6d0020, 0 6px 20px rgba(240, 30, 100, 0.6); }
+    .expression { color: #ffb3cc; }
+    .result { color: #fff; }
+    .title { color: #ff9abb; }
+    .caret { color: #a86080; }
+    .ripple { background: rgba(255, 255, 255, 0.3); }
+  }
+
+  @media (max-width: 420px) {
+    .app { padding: 22px 14px 18px; border-radius: 32px; }
+    button { padding: 16px 0; min-height: 60px; font-size: 20px; border-radius: 18px; }
+    .bow { font-size: 56px; }
+    .result { font-size: 34px; }
+    .buttons { gap: 8px; }
   }
 </style>
 </head>
 <body>
-  <div class="app">
-    <div class="bow">🎀</div>
-    <div class="title">my cutie calculator</div>
+<canvas id="confetti-canvas"></canvas>
 
-    <div class="display">
-      <div class="expression" id="expression"></div>
-      <div class="result" id="result">
-        <span id="value">0</span>
-        <span class="heart" id="heart" style="display:none;">💖</span>
-      </div>
+<div class="app">
+  <div class="bow" id="bow">🎀</div>
+  <div class="title">my cutie calculator</div>
+
+  <div class="display" id="display">
+    <div class="expression" id="expression"></div>
+    <div class="result" id="result">
+      <span id="value">0</span>
+      <span class="heart" id="heart" style="display:none;">💖</span>
     </div>
-
-    <div class="buttons">
-      <button class="sys" data-action="clear">AC</button>
-      <button class="sys" data-action="back">⌫</button>
-      <button class="sys" data-action="percent">%</button>
-      <button class="op" data-action="op" data-value="/">÷</button>
-
-      <button class="num" data-action="num" data-value="7">7</button>
-      <button class="num" data-action="num" data-value="8">8</button>
-      <button class="num" data-action="num" data-value="9">9</button>
-      <button class="op" data-action="op" data-value="*">×</button>
-
-      <button class="num" data-action="num" data-value="4">4</button>
-      <button class="num" data-action="num" data-value="5">5</button>
-      <button class="num" data-action="num" data-value="6">6</button>
-      <button class="op" data-action="op" data-value="-">−</button>
-
-      <button class="num" data-action="num" data-value="1">1</button>
-      <button class="num" data-action="num" data-value="2">2</button>
-      <button class="num" data-action="num" data-value="3">3</button>
-      <button class="op" data-action="op" data-value="+">+</button>
-
-      <button class="num zero" data-action="num" data-value="0">0</button>
-      <button class="num" data-action="dot">.</button>
-      <button class="eq" data-action="equals">=</button>
-    </div>
-
-    <div class="caret">made with ♡ for you</div>
   </div>
+
+  <div class="buttons">
+    <button class="sys" data-action="clear">AC</button>
+    <button class="sys" data-action="back">⌫</button>
+    <button class="sys" data-action="percent">%</button>
+    <button class="op" data-action="op" data-value="/">÷</button>
+
+    <button class="num" data-action="num" data-value="7">7</button>
+    <button class="num" data-action="num" data-value="8">8</button>
+    <button class="num" data-action="num" data-value="9">9</button>
+    <button class="op" data-action="op" data-value="*">×</button>
+
+    <button class="num" data-action="num" data-value="4">4</button>
+    <button class="num" data-action="num" data-value="5">5</button>
+    <button class="num" data-action="num" data-value="6">6</button>
+    <button class="op" data-action="op" data-value="-">−</button>
+
+    <button class="num" data-action="num" data-value="1">1</button>
+    <button class="num" data-action="num" data-value="2">2</button>
+    <button class="num" data-action="num" data-value="3">3</button>
+    <button class="op" data-action="op" data-value="+">+</button>
+
+    <button class="num zero" data-action="num" data-value="0">0</button>
+    <button class="num" data-action="dot">.</button>
+    <button class="eq" data-action="equals">=</button>
+  </div>
+
+  <div class="caret">made with ♡ for you</div>
+</div>
 
 <script>
   const valueEl = document.getElementById('value');
-  const exprEl = document.getElementById('expression');
+  const exprEl  = document.getElementById('expression');
   const heartEl = document.getElementById('heart');
+  const resultEl = document.getElementById('result');
+  const displayEl = document.getElementById('display');
+  const bowEl = document.getElementById('bow');
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
 
   let current = '0';
   let previous = '';
   let operator = null;
   let overwrite = false;
+  let popLock = false;
 
+  // ── Canvas sizing ──
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  // ── Number formatting ──
   function format(n) {
     const s = String(n);
     if (s.length > 12) {
-      return Number(n).toLocaleString('en-US', { maximumFractionDigits: 6 });
+      const num = Number(n);
+      if (Math.abs(num) >= 1e12 || (Math.abs(num) < 0.0001 && num !== 0)) return num.toExponential(4);
+      return num.toLocaleString('en-US', { maximumFractionDigits: 8 });
     }
     return s;
   }
 
-  function update() {
-    valueEl.textContent = format(current);
-    exprEl.textContent = previous ? `${previous} ${operator||''}` : '';
-    if (current !== '0' && !isNaN(current)) {
-      heartEl.style.display = 'inline-flex';
-    } else {
-      heartEl.style.display = 'none';
+  // ── Update display ──
+  function update(triggerPop = false) {
+    const formatted = format(current);
+    if (valueEl.textContent !== formatted) {
+      valueEl.style.opacity = '0';
+      valueEl.style.transform = triggerPop ? 'translateY(-8px) scale(0.95)' : 'translateY(-4px)';
+      requestAnimationFrame(() => {
+        valueEl.textContent = formatted;
+        valueEl.style.transition = 'all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        valueEl.style.opacity = '1';
+        valueEl.style.transform = 'translateY(0) scale(1)';
+        setTimeout(() => { valueEl.style.transition = ''; }, 250);
+      });
     }
+    exprEl.textContent = previous ? `${previous} ${operator||''}` : '';
+    heartEl.style.display = (current !== '0' && !isNaN(current)) ? 'inline-flex' : 'none';
   }
 
+  // ── Input handlers ──
   function inputDigit(d) {
+    if (popLock) return;
     if (overwrite || current === '0') { current = d; overwrite = false; }
     else { current = current + d; }
     update();
   }
 
   function inputDot() {
+    if (popLock) return;
     if (overwrite) { current = '0.'; overwrite = false; update(); return; }
     if (!current.includes('.')) { current = current + '.'; }
     update();
   }
 
   function inputOp(op) {
-    if (operator && !overwrite) calculate();
+    if (popLock) return;
+    if (operator && !overwrite) calculate(false);
+    if (operator === op && popLock === false) { /* allow stacking same op */ }
     previous = current;
     operator = op;
     overwrite = true;
     update();
   }
 
-  function calculate() {
+  function calculate(doPop = true) {
     if (!operator || previous === '' || current === '') return;
     const a = parseFloat(previous);
     const b = parseFloat(current);
@@ -258,44 +414,203 @@
     operator = null;
     previous = '';
     overwrite = true;
+    if (doPop) {
+      triggerResultPop();
+      burstConfetti(res);
+      heartBurst();
+      miniBowBounce();
+    }
     update();
   }
 
+  // ── Animations ──
+  function triggerResultPop() {
+    resultEl.classList.remove('pop');
+    void resultEl.offsetWidth;
+    resultEl.classList.add('pop');
+  }
+
+  function heartBurst() {
+    heartEl.classList.remove('burst');
+    void heartEl.offsetWidth;
+    heartEl.classList.add('burst');
+    setTimeout(() => heartEl.classList.remove('burst'), 500);
+  }
+
+  function miniBowBounce() {
+    bowEl.style.animation = 'none';
+    bowEl.offsetHeight;
+    bowEl.style.transform = 'scale(1.3) rotate(10deg)';
+    bowEl.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    setTimeout(() => {
+      bowEl.style.transform = '';
+      setTimeout(() => {
+        bowEl.style.transition = '';
+        bowEl.style.animation = '';
+      }, 350);
+    }, 50);
+  }
+
+  // ── Ripple effect ──
+  function createRipple(e, btn) {
+    const ripple = document.createElement('span');
+    ripple.classList.add('ripple');
+    const rect = btn.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+    ripple.style.top  = (e.clientY - rect.top  - size / 2) + 'px';
+    ripple.style.background = getComputedStyle(document.body).matches
+      ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.5)';
+    btn.appendChild(ripple);
+    ripple.addEventListener('animationend', () => ripple.remove());
+  }
+
+  // ── Confetti burst ──
+  const particles = [];
+  const emojis = ['💖', '💕', '🌸', '✨', '💗', '🎀', '⭐', '🩷'];
+
+  function burstConfetti(count) {
+    particles.length = 0;
+    if (count !== undefined && count === '💔') {
+      // No confetti on error, subtle shake instead
+      displayEl.style.animation = 'none';
+      displayEl.offsetHeight;
+      displayEl.style.animation = 'shake 0.5s ease';
+      setTimeout(() => displayEl.style.animation = '', 500);
+      return;
+    }
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+    for (let i = 0; i < 28; i++) {
+      particles.push({
+        x: cx, y: cy,
+        vx: (Math.random() - 0.5) * 18,
+        vy: -Math.random() * 16 - 4,
+        emoji: emojis[Math.floor(Math.random() * emojis.length)],
+        size: 18 + Math.random() * 22,
+        life: 1,
+        decay: 0.012 + Math.random() * 0.014,
+        rotation: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 8
+      });
+    }
+  }
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.28;
+      p.life -= p.decay;
+      p.rotation += p.rotSpeed;
+      if (p.life <= 0) { particles.splice(i, 1); continue; }
+      ctx.save();
+      ctx.globalAlpha = p.life;
+      ctx.translate(p.x, p.y);
+      ctx.rotate((p.rotation * Math.PI) / 180);
+      ctx.font = `${p.size}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(p.emoji, 0, 0);
+      ctx.restore();
+    }
+    requestAnimationFrame(drawParticles);
+  }
+  requestAnimationFrame(drawParticles);
+
+  // ── Shake ──
+  const shakeStyle = document.createElement('style');
+  shakeStyle.textContent = `
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%  { transform: translateX(-6px); }
+      40%  { transform: translateX(6px); }
+      60%  { transform: translateX(-4px); }
+      80%  { transform: translateX(4px); }
+    }
+  `;
+  document.head.appendChild(shakeStyle);
+
+  // ── Ambient sparkles ──
+  function spawnSparkles() {
+    const container = document.body;
+    const sparkleChars = ['✨', '💫', '⭐', '🩶', '·', '✧'];
+    for (let i = 0; i < 18; i++) {
+      const s = document.createElement('div');
+      s.classList.add('sparkle');
+      s.textContent = sparkleChars[Math.floor(Math.random() * sparkleChars.length)];
+      const size = 8 + Math.random() * 16;
+      s.style.fontSize = size + 'px';
+      s.style.left = Math.random() * 100 + 'vw';
+      s.style.animationDuration = (12 + Math.random() * 20) + 's';
+      s.style.animationDelay = (-Math.random() * 20) + 's';
+      container.appendChild(s);
+    }
+  }
+  setTimeout(spawnSparkles, 500);
+
+  // ── Button listeners ──
   document.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      createRipple(e, btn);
       const act = btn.dataset.action;
       const val = btn.dataset.value;
       if (act === 'num') inputDigit(val);
       else if (act === 'op') inputOp(val);
       else if (act === 'dot') inputDot();
       else if (act === 'equals') calculate();
-      else if (act === 'clear') { current = '0'; previous = ''; operator = null; overwrite = false; update(); }
+      else if (act === 'clear') {
+        if (current !== '0') { animateClear(); return; }
+        current = '0'; previous = ''; operator = null; overwrite = false;
+        btn.style.transform = '';
+        btn.style.animation = '';
+        update();
+      }
       else if (act === 'back') {
-        if (current === '💔' || current.length <= 1) { current = '0'; }
-        else { current = current.slice(0, -1); }
+        if (current === '💔' || current.length <= 1) current = '0';
+        else { current = current.slice(0, -1); if (current === '' || current === '-') current = '0'; }
         update();
       }
       else if (act === 'percent') {
         const n = parseFloat(current);
-        current = String(n / 100);
-        update();
+        if (!isNaN(n)) { current = String(parseFloat((n / 100).toFixed(8))); update(); }
       }
     });
   });
 
-  // Keyboard support for laptop use
-  document.addEventListener('keydown', (e) => {
-    if (e.key >= '0' && e.key <= '9') inputDigit(e.key);
-    else if (e.key === '.') inputDot();
-    else if (['+', '-', '*', '/'].includes(e.key)) inputOp(e.key);
-    else if (e.key === 'Enter' || e.key === '=') calculate();
-    else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
-      current = '0'; previous = ''; operator = null; overwrite = false; update();
-    }
-    else if (e.key === 'Backspace') {
-      if (current === '💔' || current.length <= 1) current = '0';
-      else current = current.slice(0, -1);
+  function animateClear() {
+    const btn = document.querySelector('[data-action="clear"]');
+    btn.style.transition = 'all 0.3s';
+    btn.style.transform = 'scale(0.9)';
+    setTimeout(() => {
+      current = '0'; previous = ''; operator = null; overwrite = false;
+      btn.style.transform = '';
       update();
+    }, 150);
+  }
+
+  // ── Keyboard support ──
+  document.addEventListener('keydown', (e) => {
+    let key = e.key;
+    let mappedBtn = null;
+    if (key >= '0' && key <= '9') mappedBtn = document.querySelector(`[data-action="num"][data-value="${key}"]`);
+    else if (key === '.') mappedBtn = document.querySelector('[data-action="dot"]');
+    else if (['+', '-'].includes(key)) mappedBtn = document.querySelector(`[data-action="op"][data-value="${key}"]`);
+    else if (key === '*') mappedBtn = document.querySelector('[data-action="op"][data-value="*"]');
+    else if (key === '/') { e.preventDefault(); mappedBtn = document.querySelector('[data-action="op"][data-value="/"]'); }
+    else if (key === 'Enter' || key === '=') mappedBtn = document.querySelector('[data-action="equals"]');
+    else if (key === 'Escape' || key === 'c' || key === 'C') mappedBtn = document.querySelector('[data-action="clear"]');
+    else if (key === 'Backspace') mappedBtn = document.querySelector('[data-action="back"]');
+    else if (key === '%') mappedBtn = document.querySelector('[data-action="percent"]');
+
+    if (mappedBtn) {
+      mappedBtn.style.transform = 'scale(0.92)';
+      mappedBtn.style.filter = 'brightness(0.94)';
+      setTimeout(() => { mappedBtn.style.transform = ''; mappedBtn.style.filter = ''; }, 120);
+      mappedBtn.click();
     }
   });
 
