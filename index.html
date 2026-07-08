@@ -19,35 +19,45 @@
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 
-  .vignette {
-    position: fixed; inset: 0; pointer-events: none; z-index: 5;
-    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 30%, rgba(0,0,0,0.6) 68%, rgba(0,0,0,0.97) 100%);
-    transition: opacity 9s linear; animation: breathe 7s ease-in-out infinite;
-  }
+  .vignette { position: fixed; inset: 0; pointer-events: none; z-index: 5;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 28%, rgba(0,0,0,0.62) 66%, rgba(0,0,0,0.98) 100%);
+    animation: breathe 7s ease-in-out infinite; }
   @keyframes breathe { 0%,100% { opacity: 0.85; } 50% { opacity: 1; } }
 
-  .scanlines {
-    position: fixed; inset: 0; pointer-events: none; z-index: 6;
-    background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.35) 3px, rgba(0,0,0,0.35) 4px);
-    mix-blend-mode: multiply; opacity: 0.7;
-  }
-  .flicker {
-    position: fixed; inset: 0; pointer-events: none; z-index: 7;
-    background: rgba(20,0,0,0.06); animation: flick 4s steps(2) infinite;
-  }
-  @keyframes flick { 0%,19%,21%,55%,57%,100% { opacity: 0.25; } 20%,56% { opacity: 0.65; } }
+  .scanlines { position: fixed; inset: 0; pointer-events: none; z-index: 6;
+    background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.4) 3px, rgba(0,0,0,0.4) 4px);
+    mix-blend-mode: multiply; opacity: 0.85; }
+
+  .grain { position: fixed; inset: -20%; z-index: 9; pointer-events: none; opacity: 0.10;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 220px 220px; animation: grain 0.45s steps(3) infinite; }
+  @keyframes grain { 0%{transform:translate(0,0)} 33%{transform:translate(-6%,4%)} 66%{transform:translate(5%,-5%)} 100%{transform:translate(0,0)} }
+
+  .flickerx { position: fixed; inset: 0; pointer-events: none; z-index: 7;
+    background: rgba(15,0,0,0.07); animation: flickx 5s steps(2) infinite; }
+  @keyframes flickx { 0%,19%,21%,55%,57%,100% { opacity: 0.3; } 20%,56% { opacity: 0.7; } }
+
+  /* ── VHS overlay ── */
+  .rec { position: fixed; top: calc(env(safe-area-inset-top) + 14px); left: 18px; z-index: 40; pointer-events: none;
+    color: #d0d0d0; font-size: 13px; letter-spacing: 2px; text-shadow: 0 0 6px #000; display: none; }
+  .rec .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #ff1a1a; margin-right: 6px;
+    box-shadow: 0 0 8px #ff0000; animation: recblink 1s steps(2) infinite; vertical-align: middle; }
+  @keyframes recblink { 0%,100%{opacity:1} 50%{opacity:0.15} }
+  .tc { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 14px); right: 18px; z-index: 40; pointer-events: none;
+    color: #cfcfcf; font-size: 13px; letter-spacing: 1px; text-shadow: 0 0 6px #000; display: none; font-variant-numeric: tabular-nums; }
+  .tracking { position: fixed; left: 0; width: 100%; height: 14%; z-index: 8; pointer-events: none; opacity: 0;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.0), rgba(200,200,200,0.18), rgba(255,255,255,0.0));
+    mix-blend-mode: screen; }
 
   .stage { position: relative; z-index: 3; text-align: center; padding: 18px; width: 100%; max-width: 640px; }
 
-  .gameover {
-    font-size: clamp(44px, 15vw, 130px); font-weight: 900; letter-spacing: 4px; color: #8b0000;
-    text-shadow: 0 0 6px #ff0000, 0 0 22px rgba(255,0,0,0.55), 3px 0 0 #3a0000, -3px 0 0 #5a0000;
-    position: relative; animation: pulseText 2.4s ease-in-out infinite;
-  }
+  .gameover { font-size: clamp(42px, 14vw, 120px); font-weight: 900; letter-spacing: 3px; color: #7a0000;
+    text-shadow: 0 0 5px #ff0000, 0 0 18px rgba(255,0,0,0.5), 3px 0 0 #2a0000, -3px 0 0 #4a0000;
+    position: relative; animation: pulseText 2.4s ease-in-out infinite; filter: saturate(1.2); }
   @keyframes pulseText { 0%,100% { opacity: 0.82; transform: scale(1.00); } 50% { opacity: 1; transform: scale(1.02); } }
   .gameover::before, .gameover::after { content: "GAME OVER"; position: absolute; top: 0; left: 0; width: 100%; overflow: hidden; }
-  .gameover::before { color: #00e0ff; left: 2px; text-shadow: none; animation: glitchTop 2.6s infinite linear alternate-reverse; opacity: 0.7; }
-  .gameover::after { color: #ff003c; left: -2px; text-shadow: none; animation: glitchBot 1.9s infinite linear alternate-reverse; opacity: 0.7; }
+  .gameover::before { color: #00e0ff; left: 2px; text-shadow: none; animation: glitchTop 2.6s infinite linear alternate-reverse; opacity: 0.6; }
+  .gameover::after { color: #ff003c; left: -2px; text-shadow: none; animation: glitchBot 1.9s infinite linear alternate-reverse; opacity: 0.6; }
   @keyframes glitchTop {
     0% { clip-path: inset(0 0 85% 0); transform: translate(0,0); } 20% { clip-path: inset(20% 0 55% 0); transform: translate(-3px,0); }
     40% { clip-path: inset(45% 0 35% 0); transform: translate(3px,0); } 60% { clip-path: inset(10% 0 75% 0); transform: translate(-2px,0); }
@@ -59,14 +69,14 @@
     100% { clip-path: inset(65% 0 12% 0); transform: translate(0,0); }
   }
 
-  .blood { margin: 14px auto 0; width: 60%; height: 60px; position: relative; }
+  .blood { margin: 14px auto 0; width: 60%; height: 64px; position: relative; }
   .blood::before { content: ""; position: absolute; top: 0; left: 50%; width: 3px; height: 100%;
     background: linear-gradient(to bottom, rgba(255,0,0,0.0), #8b0000 40%, #5a0000); transform: translateX(-50%); animation: drip 3.2s ease-in infinite; }
   .blood::after { content: ""; position: absolute; top: 0; left: 30%; width: 2px; height: 70%;
     background: linear-gradient(to bottom, rgba(255,0,0,0.0), #7a0000); animation: drip 4.1s ease-in infinite 1.2s; }
   @keyframes drip { 0% { height: 0; opacity: 0; } 15% { opacity: 1; } 100% { height: 100%; opacity: 0.85; } }
 
-  .you { margin-top: 26px; font-size: clamp(17px, 4.6vw, 30px); color: #c9c9c9; letter-spacing: 2px; text-shadow: 0 0 8px rgba(180,0,0,0.6); animation: flickerText 3.3s infinite; }
+  .you { margin-top: 26px; font-size: clamp(16px, 4.4vw, 28px); color: #c9c9c9; letter-spacing: 2px; text-shadow: 0 0 8px rgba(180,0,0,0.6); animation: flickerText 3.3s infinite; }
   @keyframes flickerText { 0%,18%,22%,25%,53%,57%,100% { opacity: 0.9; } 20%,24%,55% { opacity: 0.18; } 80% { opacity: 0.55; } }
   .you .em { color: #ff2b2b; text-shadow: 0 0 12px rgba(255,0,0,0.9); }
 
@@ -77,29 +87,29 @@
 
   .hint { margin-top: 18px; font-size: 11px; color: #444; letter-spacing: 2px; animation: pulseHint 2s ease-in-out infinite; }
 
-  .controls { margin-top: 22px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  .btn { appearance: none; border: 1px solid #5a0000; background: rgba(30,0,0,0.6); color: #c94a4a; font-family: inherit; font-size: 12px; letter-spacing: 2px; padding: 11px 16px; border-radius: 8px; cursor: pointer; text-transform: uppercase; text-shadow: 0 0 6px rgba(255,0,0,0.5); transition: all 0.18s ease; -webkit-tap-highlight-color: transparent; }
+  .controls { margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .btn { appearance: none; border: 1px solid #5a0000; background: rgba(30,0,0,0.6); color: #c94a4a; font-family: inherit; font-size: 12px; letter-spacing: 2px; padding: 10px 14px; border-radius: 8px; cursor: pointer; text-transform: uppercase; text-shadow: 0 0 6px rgba(255,0,0,0.5); transition: all 0.18s ease; -webkit-tap-highlight-color: transparent; }
   .btn:active { transform: scale(0.93); background: rgba(60,0,0,0.8); color: #ff5b5b; }
   .btn.find { border-color: #7a0000; color: #ff6a6a; }
+  .btn.leave { border-color: #444; color: #9a9a9a; }
 
-  /* ── Dead eyes in the void ── */
   .eyes { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
   .eye { position: absolute; width: 26px; height: 26px; border-radius: 50%; background: radial-gradient(circle at 50% 50%, #1a0000 0%, #000 60%); box-shadow: 0 0 4px #300; }
   .eye::after { content: ""; position: absolute; top: 50%; left: 50%; width: 7px; height: 7px; background: #e8e8e8; border-radius: 50%; transform: translate(-50%,-50%); box-shadow: 0 0 8px #fff; opacity: 0; transition: opacity 0.18s ease; }
   .eye.open::after { opacity: 0.95; }
 
-  /* ── The Watcher (approaches over time) ── */
-  .watcher {
-    position: fixed; left: 50%; bottom: -10%; transform: translateX(-50%) scale(0.35);
-    z-index: 1; width: 46vw; max-width: 360px; pointer-events: none;
-    opacity: 0; transition: transform 60s linear, opacity 6s ease;
-    filter: blur(6px) contrast(1.4) brightness(0.5);
-  }
+  .watcher { position: fixed; left: 50%; bottom: -10%; transform: translateX(-50%) scale(0.35); z-index: 1; width: 46vw; max-width: 360px; pointer-events: none; opacity: 0; transition: transform 60s linear, opacity 6s ease; filter: blur(6px) contrast(1.4) brightness(0.5); }
   .watcher.show { opacity: 0.55; }
   .watcher svg { display: block; width: 100%; height: auto; }
   .watcher .weyes { animation: watcherBlink 6s infinite; transform-origin: center; }
 
-  /* ── Subliminal face flashes ── */
+  /* ── Samara/Grudge crawler ── */
+  .crawler { position: fixed; left: 0; width: 100%; z-index: 12; pointer-events: none; display: none; align-items: flex-end; justify-content: center; opacity: 0; }
+  .crawler.on { display: flex; }
+  .crawler svg { width: 50vw; max-width: 320px; height: auto; filter: drop-shadow(0 0 30px #000) blur(1px); }
+  @keyframes crawlUp { 0% { transform: translateY(60vh) rotate(-4deg); opacity: 0; } 12% { opacity: 0.9; } 100% { transform: translateY(-6vh) rotate(3deg); opacity: 0.92; } }
+  @keyframes crawlDown { 0% { transform: translateY(-60vh) rotate(4deg); opacity: 0; } 12% { opacity: 0.9; } 100% { transform: translateY(60vh) rotate(-3deg); opacity: 0; } }
+
   .sublime { position: fixed; inset: 0; z-index: 80; pointer-events: none; display: none; align-items: center; justify-content: center; background: #000; }
   .sublime.on { display: flex; }
   .sublime svg { width: 60vw; max-width: 320px; height: auto; filter: drop-shadow(0 0 30px #400); opacity: 0.9; }
@@ -120,28 +130,57 @@
   @keyframes redFlash { 0% { opacity: 0.95; } 100% { opacity: 0; } }
   .scare .glitchbar { position: absolute; left: 0; width: 100%; height: 3px; background: #fff; opacity: 0.7; animation: barJump 0.12s infinite; }
   @keyframes barJump { 0% { top: 10%; } 50% { top: 60%; } 100% { top: 88%; } }
+
+  /* ── YOU CAN'T LEAVE takeover ── */
+  .takeover { position: fixed; inset: 0; z-index: 95; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 14px; background: rgba(0,0,0,0.82); text-align: center; padding: 30px; }
+  .takeover.on { display: flex; animation: tkIn 0.25s steps(2) forwards; }
+  @keyframes tkIn { 0% { opacity: 0; transform: scaleY(0.2); } 100% { opacity: 1; transform: scaleY(1); } }
+  .takeover .big { font-size: clamp(34px, 11vw, 90px); font-weight: 900; letter-spacing: 4px; color: #b30000; text-shadow: 0 0 18px #ff0000, 4px 0 0 #2a0000, -4px 0 0 #4a0000; animation: tkFlick 0.18s steps(2) infinite; }
+  @keyframes tkFlick { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .takeover .sub { font-size: 13px; letter-spacing: 3px; color: #888; animation: pulseHint 1.6s ease-in-out infinite; }
 </style>
 </head>
 <body>
 
-<!-- dead eyes in the void -->
 <div class="eyes" id="eyes"></div>
 
-<!-- the approaching watcher -->
 <div class="watcher" id="watcher">
   <svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
-    <defs><radialGradient id="wg" cx="50%" cy="20%" r="80%">
-      <stop offset="0%" stop-color="#2a0000"/><stop offset="60%" stop-color="#0c0000"/><stop offset="100%" stop-color="#000"/>
-    </radialGradient></defs>
+    <defs><radialGradient id="wg" cx="50%" cy="20%" r="80%"><stop offset="0%" stop-color="#2a0000"/><stop offset="60%" stop-color="#0c0000"/><stop offset="100%" stop-color="#000"/></radialGradient></defs>
     <ellipse cx="100" cy="150" rx="70" ry="120" fill="url(#wg)"/>
-    <g class="weyes" fill="#000">
-      <ellipse cx="74" cy="120" rx="16" ry="26"/>
-      <ellipse cx="126" cy="120" rx="16" ry="26"/>
-    </g>
-    <circle cx="74" cy="124" r="4" fill="#b30000"/>
-    <circle cx="126" cy="124" r="4" fill="#b30000"/>
+    <g class="weyes" fill="#000"><ellipse cx="74" cy="120" rx="16" ry="26"/><ellipse cx="126" cy="120" rx="16" ry="26"/></g>
+    <circle cx="74" cy="124" r="4" fill="#b30000"/><circle cx="126" cy="124" r="4" fill="#b30000"/>
     <path d="M60 230 Q100 270 140 230 Q100 250 60 230 Z" fill="#1a0000"/>
     <path d="M82 235 Q100 300 118 235 Q100 255 82 235 Z" fill="#3a0000"/>
+  </svg>
+</div>
+
+<!-- Samara crawler (climbs up) -->
+<div class="crawler" id="crawlerUp" style="bottom:0;">
+  <svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+    <path d="M100 10 Q40 60 60 120 Q20 160 70 200 L130 200 Q180 160 140 120 Q160 60 100 10 Z" fill="#0a0a0a"/>
+    <g stroke="#000" stroke-width="3" opacity="0.9">
+      <path d="M100 12 Q60 40 50 110"/><path d="M100 12 Q140 40 150 110"/>
+      <path d="M100 14 Q80 50 70 130"/><path d="M100 14 Q120 50 130 130"/>
+    </g>
+    <ellipse cx="100" cy="120" rx="46" ry="60" fill="#d9d2c7"/>
+    <ellipse cx="80" cy="112" rx="13" ry="22" fill="#000"/><ellipse cx="120" cy="112" rx="13" ry="22" fill="#000"/>
+    <circle cx="80" cy="118" r="3" fill="#5a0000"/><circle cx="120" cy="118" r="3" fill="#5a0000"/>
+    <path d="M62 168 Q100 150 138 168 Q100 196 62 168 Z" fill="#111"/>
+  </svg>
+</div>
+<!-- Grudge crawler (drops down) -->
+<div class="crawler" id="crawlerDown" style="top:0;">
+  <svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+    <path d="M100 230 Q40 180 60 120 Q20 80 70 40 L130 40 Q180 80 140 120 Q160 180 100 230 Z" fill="#0a0a0a"/>
+    <g stroke="#000" stroke-width="3" opacity="0.9">
+      <path d="M100 228 Q60 200 50 130"/><path d="M100 228 Q140 200 150 130"/>
+      <path d="M100 226 Q80 190 70 110"/><path d="M100 226 Q120 190 130 110"/>
+    </g>
+    <ellipse cx="100" cy="120" rx="46" ry="60" fill="#cfc7ba"/>
+    <ellipse cx="80" cy="112" rx="12" ry="20" fill="#000"/><ellipse cx="120" cy="112" rx="12" ry="20" fill="#000"/>
+    <circle cx="80" cy="118" r="3" fill="#7a0000"/><circle cx="120" cy="118" r="3" fill="#7a0000"/>
+    <path d="M70 158 Q100 138 130 158 Q100 184 70 158 Z" fill="#0c0c0c"/>
   </svg>
 </div>
 
@@ -154,29 +193,25 @@
   <div class="hint">[ tap anywhere — it is listening ]</div>
   <div class="controls">
     <button class="btn find" id="findBtn">👁 let it find you</button>
+    <button class="btn leave" id="leaveBtn">LET ME OUT</button>
     <button class="btn" id="shareBtn">share the curse</button>
   </div>
 </div>
 
-<!-- subliminal flashes -->
 <div class="sublime" id="sublime"><svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
   <ellipse cx="100" cy="120" rx="84" ry="104" fill="#d8d4cc"/>
-  <ellipse cx="70" cy="100" rx="18" ry="28" fill="#000"/>
-  <ellipse cx="130" cy="100" rx="18" ry="28" fill="#000"/>
+  <ellipse cx="70" cy="100" rx="18" ry="28" fill="#000"/><ellipse cx="130" cy="100" rx="18" ry="28" fill="#000"/>
   <circle cx="70" cy="106" r="4" fill="#5a0000"/><circle cx="130" cy="106" r="4" fill="#5a0000"/>
   <path d="M40 200 Q100 150 160 200 Q100 240 40 200 Z" fill="#111"/>
   <path d="M78 200 L100 168 L122 200 L100 216 Z" fill="#000"/>
 </svg></div>
 
-<!-- jumpscare -->
 <div class="scare" id="scare">
-  <div class="redflash"></div>
-  <div class="glitchbar"></div>
+  <div class="redflash"></div><div class="glitchbar"></div>
   <svg viewBox="0 0 220 260" xmlns="http://www.w3.org/2000/svg">
     <ellipse cx="110" cy="130" rx="92" ry="112" fill="#cfc9bf"/>
     <path d="M20 120 Q110 30 200 120 Q110 70 20 120 Z" fill="#1a0000"/>
-    <ellipse cx="74" cy="112" rx="26" ry="34" fill="#000"/>
-    <ellipse cx="146" cy="112" rx="26" ry="34" fill="#000"/>
+    <ellipse cx="74" cy="112" rx="26" ry="34" fill="#000"/><ellipse cx="146" cy="112" rx="26" ry="34" fill="#000"/>
     <circle cx="74" cy="118" r="7" fill="#b30000"/><circle cx="146" cy="118" r="7" fill="#b30000"/>
     <path d="M40 150 Q110 120 180 150 Q110 172 40 150 Z" fill="#2a0000"/>
     <path d="M55 175 L110 250 L165 175 Q110 210 55 175 Z" fill="#000"/>
@@ -185,10 +220,20 @@
   </svg>
 </div>
 
+<div class="takeover" id="takeover">
+  <div class="big">YOU CAN'T LEAVE</div>
+  <div class="sub" id="takeoverSub">[ it was already inside ]</div>
+</div>
+
 <div class="staticflash" id="staticflash"></div>
+<div class="grain"></div>
 <div class="scanlines"></div>
-<div class="flicker"></div>
+<div class="flickerx"></div>
+<div class="tracking" id="tracking"></div>
 <div class="vignette"></div>
+
+<div class="rec" id="rec"><span class="dot"></span>REC</div>
+<div class="tc" id="tc">00:00:00</div>
 
 <div class="veil" id="veil">
   <div class="big">DO NOT OPEN</div>
@@ -196,6 +241,11 @@
 </div>
 
 <script>
+  // ── MODE: cheating / betrayal personalization ──
+  const params = new URLSearchParams(location.search);
+  const isCheat = params.get('mode') === 'cheat';
+  const NAME = (params.get('name') || '').trim().toUpperCase();
+
   const stage = document.getElementById('stage');
   const whisperEl = document.getElementById('whisper');
   const timerEl = document.getElementById('timer');
@@ -204,47 +254,78 @@
   const scare = document.getElementById('scare');
   const findBtn = document.getElementById('findBtn');
   const shareBtn = document.getElementById('shareBtn');
+  const leaveBtn = document.getElementById('leaveBtn');
   const sublime = document.getElementById('sublime');
   const watcher = document.getElementById('watcher');
+  const tracking = document.getElementById('tracking');
+  const recEl = document.getElementById('rec');
+  const tcEl = document.getElementById('tc');
+  const takeover = document.getElementById('takeover');
+  const takeoverSub = document.getElementById('takeoverSub');
+  const youEl = document.querySelector('.you');
 
-  let dreadLevel = 0; // 0..1 escalates over time
+  // Personalize the main line
+  if (isCheat && NAME) {
+    youEl.innerHTML = NAME + ', you did this to <span class="em">yourself</span>';
+    document.title = NAME + " — GAME OVER";
+  }
 
-  // ── Dead eyes scattered in the void ──
+  let dreadLevel = 0; // 0..1
+
+  // ── Dead eyes ──
   const eyesWrap = document.getElementById('eyes');
   const eyeList = [];
-  for (let i = 0; i < 7; i++) {
-    const e = document.createElement('div');
-    e.className = 'eye';
-    e.style.left = (8 + Math.random()*84) + 'vw';
-    e.style.top = (6 + Math.random()*88) + 'vh';
+  for (let i = 0; i < 8; i++) {
+    const e = document.createElement('div'); e.className = 'eye';
+    e.style.left = (6 + Math.random()*88) + 'vw'; e.style.top = (5 + Math.random()*90) + 'vh';
     e.style.transform = 'scale(' + (0.6 + Math.random()*1.1) + ')';
-    eyesWrap.appendChild(e);
-    eyeList.push(e);
+    eyesWrap.appendChild(e); eyeList.push(e);
   }
   function blinkEyes() {
     const e = eyeList[Math.floor(Math.random()*eyeList.length)];
-    e.classList.add('open');
-    setTimeout(() => e.classList.remove('open'), 350 + Math.random()*400);
-    setTimeout(blinkEyes, 2200 + Math.random()*5200);
+    e.classList.add('open'); setTimeout(() => e.classList.remove('open'), 350 + Math.random()*400);
+    setTimeout(blinkEyes, 1800 + Math.random()*5000);
   }
-  setTimeout(blinkEyes, 1500);
+  setTimeout(blinkEyes, 1200);
 
   // ── Whispers ──
-  const lines = [
+  const baseLines = [
     "behind you", "it already knows", "you left the door open", "they are counting",
     "don't look up", "this was always the ending", "it hears the screen",
     "you can still feel it", "no one is coming", "the numbers were never yours",
-    "it can see you through the glass", "you were the last one", "it is still in the room",
-    "closer now", "do not turn around"
+    "it can see you through the glass", "it is still in the room", "do not turn around",
+    "closer now", "the walls are breathing"
   ];
+  const cheatLines = isCheat && NAME ? [
+    NAME + ", he knows", "he read every message", "you did this to " + NAME,
+    "the pictures are still on his phone", "you betrayed him", "you can't undo it",
+    "she showed him everything", "he saw the texts at 3am", "you lied to his face",
+    NAME + ", this is your ending"
+  ] : [];
+  const lines = baseLines.concat(cheatLines);
+
   function whisperLoop() {
     const l = lines[Math.floor(Math.random()*lines.length)];
     whisperEl.style.opacity = '0';
     setTimeout(() => { whisperEl.textContent = l; whisperEl.style.opacity = '0.8'; }, 300);
     setTimeout(() => { whisperEl.style.opacity = '0'; }, 2600);
-    setTimeout(whisperLoop, 4000 + Math.random()*3500);
+    setTimeout(whisperLoop, 3800 + Math.random()*3800);
   }
   whisperLoop();
+
+  // ── VHS tracking distortion sweep ──
+  function trackingSweep() {
+    tracking.style.opacity = '0.9';
+    tracking.style.transition = 'none';
+    tracking.style.transform = 'translateY(-20%)';
+    requestAnimationFrame(() => {
+      tracking.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+      tracking.style.transform = 'translateY(700%)';
+      tracking.style.opacity = '0';
+    });
+    setTimeout(trackingSweep, 9000 + Math.random()*14000 + dreadLevel*4000);
+  }
+  setTimeout(trackingSweep, 6000);
 
   // ── Static flash ──
   function flashLoop() {
@@ -254,21 +335,26 @@
   }
   flashLoop();
 
-  // ── Timer ──
+  // ── REC timecode ──
+  function fmtTC(s) { const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),r=s%60; const p=n=>(n<10?'0':'')+n; return p(h)+':'+p(m)+':'+p(r); }
+
+  // ── Timer + dread escalation ──
   let seconds = 0, started = false;
   function fmt(s) { const m = Math.floor(s/60), r = s % 60; return m + ':' + (r < 10 ? '0' : '') + r; }
   function tickTimer() {
     seconds++;
-    timerEl.textContent = 'you have been here ' + fmt(seconds);
-    dreadLevel = Math.min(1, seconds / 120); // full dread at 2 minutes
-    // escalate visuals
-    document.documentElement.style.setProperty('--d', dreadLevel.toFixed(3));
-    flash.style.opacity = (0.04 + dreadLevel*0.18).toFixed(3);
+    timerEl.textContent = (isCheat && NAME ? NAME + " has been here " : "you have been here ") + fmt(seconds);
+    tcEl.textContent = fmtTC(seconds);
+    const prev = dreadLevel;
+    dreadLevel = Math.min(1, seconds / 110);
+    if (audioReady && dreadLevel - prev > 0.001) intensify(dreadLevel);
   }
   function startTimer() { if (!started) { started = true; setInterval(tickTimer, 1000); } }
 
-  /* ── AUDIO ENGINE ── */
-  let audioCtx = null, masterGain = null, audioReady = false, musicTimer = null;
+  /* ── AUDIO: 2000s horror score (no music-box) ── */
+  let audioCtx = null, master = null, audioReady = false;
+  let droneGain, droneOscs = [], stringGain, stringFilter, breathGain, beatRate = 1150;
+  let heartTimer = null;
 
   function ensureAudio() {
     try {
@@ -277,78 +363,80 @@
     } catch (e) {}
   }
 
-  function startDread() {
+  function makeLFO(freq, depth, target, base) {
+    const o = audioCtx.createOscillator(); o.type = 'sine'; o.frequency.value = freq;
+    const g = audioCtx.createGain(); g.gain.value = depth;
+    o.connect(g); g.connect(target);
+    if (base !== undefined) target.value = base;
+    o.start();
+    return o;
+  }
+
+  function startScore() {
     ensureAudio();
     if (audioReady || !audioCtx) return;
     audioReady = true;
-    masterGain = audioCtx.createGain();
-    masterGain.gain.value = 0.0001;
-    masterGain.connect(audioCtx.destination);
-    masterGain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 5);
+    master = audioCtx.createGain(); master.gain.value = 0.0001; master.connect(audioCtx.destination);
+    master.gain.linearRampToValueAtTime(0.6, audioCtx.currentTime + 5);
 
-    // low drone bed
-    const osc = audioCtx.createOscillator();
-    const osc2 = audioCtx.createOscillator();
-    const osc3 = audioCtx.createOscillator();
-    const droneGain = audioCtx.createGain(); droneGain.gain.value = 0.18;
-    osc.type = 'sine'; osc.frequency.value = 41;
-    osc2.type = 'sine'; osc2.frequency.value = 54.5; // detuned — unease
-    osc3.type = 'triangle'; osc3.frequency.value = 81.3;
-    osc.connect(droneGain); osc2.connect(droneGain); osc3.connect(droneGain);
-    droneGain.connect(masterGain);
-    osc.start(); osc2.start(); osc3.start();
-
-    // slow heartbeat
-    let beat = 0;
-    setInterval(() => { if (audioCtx) thump(beat % 2 === 0 ? 0.9 : 0.5); beat++; }, 1150);
-
-    startMusicBox();
-  }
-
-  // creepy detuned music-box lullaby (synthesized)
-  function startMusicBox() {
-    // a minor-key childlike melody (semitone offsets from A3 ~ 220hz), with rests
-    const A = 220, f = n => A * Math.pow(2, n/12);
-    // notes: A, C, E, A(up), G#, E, C, B, A  ... eerie minor
-    const seq = [
-      [0, 0.5], [3, 0.5], [7, 0.5],
-      [12, 0.7], [8, 0.5], [7, 0.5],
-      [3, 0.5], [2, 0.5], [-1, 0.6],
-      [0, 0.5], [3, 0.5], [7, 0.5],
-      [12, 0.7], [11, 0.5], [7, 0.8],
-      [3, 0.5], [0, 0.9]
-    ];
-    let i = 0;
-    function playNote() {
-      if (!audioCtx || !audioReady) return;
-      const [semi, dur] = seq[i % seq.length];
-      i++;
-      const t = audioCtx.currentTime;
-      // detune slowly for "out of tune" dread
-      const detune = 1 + (Math.sin(t*0.3) * 0.012) + dreadLevel * 0.02;
-      const freq = f(semi) * detune;
+    // low dragging drone (beating = unease)
+    droneGain = audioCtx.createGain(); droneGain.gain.value = 0.16;
+    const dlp = audioCtx.createBiquadFilter(); dlp.type = 'lowpass'; dlp.frequency.value = 220;
+    droneGain.connect(dlp); dlp.connect(master);
+    [38, 38.5, 57.2].forEach((f, i) => {
       const o = audioCtx.createOscillator();
-      const o2 = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
-      o.type = 'triangle'; o.frequency.value = freq;
-      o2.type = 'sine'; o2.frequency.value = freq * 2.001; // metallic shimmer
-      const ng = audioCtx.createGain(); ng.gain.value = 0.12;
-      o.connect(g); o2.connect(ng); ng.connect(g); g.connect(masterGain);
-      const peak = 0.18 + dreadLevel * 0.1;
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(peak, t + 0.01);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + dur * 0.95);
-      o.start(t); o.stop(t + dur); o2.start(t); o2.stop(t + dur);
-      musicTimer = setTimeout(playNote, dur * 1000 * (0.96 + Math.random()*0.12));
+      o.type = i === 2 ? 'triangle' : 'sine'; o.frequency.value = f;
+      o.detune.value = (Math.random()*8 - 4);
+      o.connect(droneGain); o.start(); droneOscs.push(o);
+    });
+    makeLFO(0.07, 0.05, droneGain.gain, 0.16); // slow breathing drone
+
+    // dissonant string cluster (sawtooth, detuned minor 2nd + tritone), slow swell
+    stringGain = audioCtx.createGain(); stringGain.gain.value = 0.02;
+    stringFilter = audioCtx.createBiquadFilter(); stringFilter.type = 'lowpass'; stringFilter.frequency.value = 500; stringFilter.Q.value = 4;
+    stringGain.connect(stringFilter); stringFilter.connect(master);
+    const root = 110; // A2
+    [0, 1, 6, 7].forEach(semi => { // cluster: root, m2, tritone, m7
+      const o = audioCtx.createOscillator(); o.type = 'sawtooth';
+      o.frequency.value = root * Math.pow(2, semi/12); o.detune.value = (Math.random()*16 - 8);
+      o.connect(stringGain); o.start();
+    });
+    makeLFO(0.05, 0.05, stringGain.gain, 0.04); // swell
+    makeLFO(0.03, 350, stringFilter.frequency, 600); // filter sweep (creaks)
+
+    // whispered breath bed (modulated noise through bandpass)
+    const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
+    const d = buf.getChannelData(0); for (let i=0;i<d.length;i++) d[i] = Math.random()*2-1;
+    const noise = audioCtx.createBufferSource(); noise.buffer = buf; noise.loop = true;
+    const bp = audioCtx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 900; bp.Q.value = 2;
+    breathGain = audioCtx.createGain(); breathGain.gain.value = 0.0;
+    noise.connect(bp); bp.connect(breathGain); breathGain.connect(master); noise.start();
+    function breathe() {
+      if (!audioCtx) return;
+      const t = audioCtx.currentTime;
+      const peak = 0.05 + dreadLevel*0.06 + (Math.random()<0.2 ? 0.1 : 0);
+      breathGain.gain.cancelScheduledValues(t);
+      breathGain.gain.setValueAtTime(0.0001, t);
+      breathGain.gain.linearRampToValueAtTime(peak, t + 0.6);
+      breathGain.gain.exponentialRampToValueAtTime(0.0001, t + 1.4 + Math.random());
+      setTimeout(breathe, 2600 + Math.random()*3500);
     }
-    playNote();
+    setTimeout(breathe, 1500);
+
+    // heartbeat
+    heartTimer = setInterval(() => { if (audioCtx) thump(beatRate % 2 === 0 ? 0.9 : 0.5); }, beatRate);
+
+    // rising tension ring as dread grows
+    const ring = audioCtx.createOscillator(); ring.type = 'sine'; ring.frequency.value = 3200;
+    const rg = audioCtx.createGain(); rg.gain.value = 0.0; ring.connect(rg); rg.connect(master); ring.start();
+    setInterval(() => { if (audioCtx && audioReady) rg.gain.value = dreadLevel*0.012; }, 500);
   }
 
   function thump(vol) {
     if (!audioCtx) return;
     const o = audioCtx.createOscillator(), g = audioCtx.createGain();
     o.type = 'sine'; o.frequency.value = 60; g.gain.value = 0;
-    o.connect(g); g.connect(masterGain);
+    o.connect(g); g.connect(master);
     const t = audioCtx.currentTime;
     g.gain.linearRampToValueAtTime(vol * 0.4, t + 0.02);
     g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
@@ -356,33 +444,44 @@
     o.start(t); o.stop(t + 0.4);
   }
 
-  function scream() {
+  // sting — sharp horror hit
+  function sting(strong) {
     if (!audioCtx) return;
-    const t = audioCtx.currentTime, dur = 1.0;
-    // distorted noise burst
-    const buffer = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * dur), audioCtx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < data.length; i++) data[i] = (Math.random()*2 - 1) * Math.pow(1 - i/data.length, 1.4);
-    const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
-    const ng = audioCtx.createGain(); ng.gain.value = 0.0;
-    const bp = audioCtx.createBiquadFilter(); bp.type = 'highpass'; bp.frequency.value = 800;
-    noise.connect(bp); bp.connect(ng); ng.connect(masterGain);
-    ng.gain.setValueAtTime(1.0, t); ng.gain.exponentialRampToValueAtTime(0.001, t + dur);
-    noise.start(t); noise.stop(t + dur);
-    // descending shriek
-    const o = audioCtx.createOscillator(); o.type = 'sawtooth';
-    o.frequency.setValueAtTime(1200, t); o.frequency.exponentialRampToValueAtTime(120, t + 0.8);
-    const og = audioCtx.createGain(); og.gain.setValueAtTime(0.6, t); og.gain.exponentialRampToValueAtTime(0.001, t + 0.85);
-    o.connect(og); og.connect(masterGain); o.start(t); o.stop(t + 0.9);
+    const t = audioCtx.currentTime, dur = strong ? 1.0 : 0.6;
+    const ng = audioCtx.createGain(); ng.gain.value = 0.0; ng.connect(master);
+    const buf = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate*dur), audioCtx.sampleRate);
+    const d = buf.getChannelData(0); for (let i=0;i<d.length;i++) d[i] = (Math.random()*2-1)*Math.pow(1-i/d.length,1.3);
+    const noise = audioCtx.createBufferSource(); noise.buffer = buf;
+    const hp = audioCtx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=700;
+    noise.connect(hp); hp.connect(ng);
+    ng.gain.setValueAtTime(strong?1.0:0.7, t); ng.gain.exponentialRampToValueAtTime(0.001, t+dur);
+    noise.start(t); noise.stop(t+dur);
+    // dissonant high cluster
+    [800, 1200, 1600].forEach((f, i) => {
+      const o = audioCtx.createOscillator(); o.type='sawtooth'; o.frequency.value = f*(1+ (Math.random()*0.04-0.02));
+      const og = audioCtx.createGain(); og.gain.setValueAtTime(strong?0.18:0.1, t); og.gain.exponentialRampToValueAtTime(0.001, t+dur*0.8);
+      o.connect(og); og.connect(master); o.start(t); o.stop(t+dur);
+    });
+    // low boom
+    const b = audioCtx.createOscillator(); b.type='sine'; b.frequency.setValueAtTime(strong?90:70,t); b.frequency.exponentialRampToValueAtTime(28, t+dur);
+    const bg = audioCtx.createGain(); bg.gain.setValueAtTime(strong?0.6:0.35, t); bg.gain.exponentialRampToValueAtTime(0.001, t+dur);
+    b.connect(bg); bg.connect(master); b.start(t); b.stop(t+dur);
   }
 
-  /* ── SUBLIMINAL FACE FLASHES ── */
+  function intensify(L) {
+    if (!audioCtx) return;
+    droneGain.gain.value = 0.16 + L*0.12;
+    stringGain.gain.value = 0.04 + L*0.08;
+    beatRate = Math.max(620, 1150 - L*530);
+    if (heartTimer) { clearInterval(heartTimer); heartTimer = setInterval(() => { if (audioCtx) thump(beatRate%2===0?0.9:0.5); }, beatRate); }
+  }
+
+  /* ── SUBLIMINAL ── */
   let subCooldown = false;
   function subliminal() {
-    if (subCooldown) return;
-    subCooldown = true;
+    if (subCooldown) return; subCooldown = true;
     sublime.classList.add('on');
-    setTimeout(() => sublime.classList.remove('on'), 70 + Math.random()*60); // barely perceptible
+    setTimeout(() => sublime.classList.remove('on'), 70 + Math.random()*60);
     setTimeout(() => subCooldown = false, 4000 + Math.random()*6000);
   }
   function subliminalLoop() {
@@ -391,13 +490,21 @@
   }
   setTimeout(subliminalLoop, 8000);
 
-  /* ── THE WATCHER APPROACHES ── */
-  setTimeout(() => { watcher.classList.add('show'); }, 14000);
-  // keep scaling up slowly toward viewer as time passes
+  /* ── CRAWLERS (Samara/Grudge) ── */
+  function crawl(dir) {
+    const el = dir === 'up' ? document.getElementById('crawlerUp') : document.getElementById('crawlerDown');
+    el.classList.add('on');
+    el.style.animation = (dir === 'up' ? 'crawlUp' : 'crawlDown') + ' 6s ease-in forwards';
+    sting(false);
+    setTimeout(() => { el.classList.remove('on'); el.style.animation = ''; }, 6200);
+  }
+
+  /* ── WATCHER ── */
+  setTimeout(() => { watcher.classList.add('show'); }, 12000);
   setInterval(() => {
     if (!watcher.classList.contains('show')) return;
-    const s = 0.35 + Math.min(0.7, seconds / 200);
-    const bottom = -10 + Math.min(20, seconds / 12);
+    const s = 0.35 + Math.min(0.7, seconds / 180);
+    const bottom = -10 + Math.min(22, seconds / 10);
     watcher.style.transform = 'translateX(-50%) scale(' + s.toFixed(3) + ')';
     watcher.style.bottom = bottom.toFixed(1) + '%';
   }, 4000);
@@ -408,7 +515,7 @@
     if (scareCooldown > 0) return;
     scareCooldown = 5;
     scare.classList.add('on');
-    scream();
+    sting(true);
     whisperEl.textContent = 'IT FOUND YOU';
     whisperEl.style.opacity = '0.9';
     setTimeout(() => { scare.classList.remove('on'); }, 650);
@@ -417,8 +524,51 @@
 
   stage.addEventListener('pointerup', () => {
     ensureAudio();
-    if (scareCooldown === 0 && Math.random() < 0.22) triggerScare();
+    if (scareCooldown === 0 && Math.random() < 0.20) triggerScare();
   });
+
+  /* ── LET ME OUT (the trap) ── */
+  let leaveClicks = 0;
+  const leaveTexts = ["LET ME OUT", "PLEASE", "LET ME OUT", "I'M SORRY", "LET ME OUT", "HELP ME", "LET ME OUT"];
+  const leaveWhisper = ["NO.", "there is no door", "you locked it yourself", "no one is outside", "it heard you", "you're already inside", "too late"];
+  leaveBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); ensureAudio();
+    leaveClicks++;
+    sting(true);
+    whisperEl.textContent = leaveWhisper[Math.min(leaveClicks-1, leaveWhisper.length-1)] || "NO.";
+    whisperEl.style.opacity = '0.95';
+    dreadLevel = Math.min(1, dreadLevel + 0.18);
+    if (audioReady) intensify(dreadLevel);
+    // screen jolt
+    document.body.style.filter = 'invert(1) hue-rotate(200deg)';
+    setTimeout(() => document.body.style.filter = '', 140);
+    // lunge
+    watcher.style.bottom = (parseFloat(watcher.style.bottom||'-10') + 8) + '%';
+    if (Math.random() < 0.6) crawl(Math.random() < 0.5 ? 'up' : 'down');
+    leaveBtn.textContent = leaveTexts[leaveClicks % leaveTexts.length];
+    if (leaveClicks >= 7) { leaveBtn.textContent = "NO EXIT"; leaveBtn.style.pointerEvents = 'none'; leaveBtn.style.opacity = '0.4'; }
+  });
+
+  /* ── YOU CAN'T LEAVE takeover after 60s ── */
+  let takeoverActive = false;
+  const takeoverSubs = ["[ it was already inside ]", "[ the door was never real ]", "[ you opened it ]", "[ it followed you here ]", isCheat && NAME ? "[ " + NAME + " can't leave ]" : "[ there is no way out ]"];
+  function showTakeover() {
+    if (takeoverActive) return;
+    takeoverActive = true;
+    takeoverSub.textContent = takeoverSubs[Math.floor(Math.random()*takeoverSubs.length)];
+    takeover.classList.add('on');
+    sting(true);
+    if (Math.random() < 0.5) crawl(Math.random() < 0.5 ? 'up' : 'down');
+    // tapping the takeover = worse
+    takeover.onclick = () => { triggerScare(); hideTakeover(6000 + Math.random()*6000); };
+  }
+  function hideTakeover(ms) {
+    takeover.classList.remove('on'); takeoverActive = false;
+    setTimeout(() => { if (seconds >= 60) showTakeover(); }, ms);
+  }
+  setInterval(() => {
+    if (seconds >= 60 && !takeoverActive && Math.random() < 0.5) showTakeover();
+  }, 8000);
 
   /* ── SHARE ── */
   function makeCard() {
@@ -432,9 +582,10 @@
     x.shadowColor = '#ff0000'; x.shadowBlur = 34; x.fillStyle = '#8b0000';
     x.font = '900 140px "Courier New", monospace'; x.fillText('GAME OVER', 600, 210);
     x.shadowBlur = 12; x.fillStyle = '#cccccc'; x.font = '44px "Courier New", monospace';
-    x.fillText('you did this to yourself', 600, 300);
+    const line = isCheat && NAME ? NAME + ", you did this to yourself" : "you did this to yourself";
+    x.fillText(line, 600, 300);
     x.fillStyle = '#ff2b2b'; x.font = '30px "Courier New", monospace';
-    x.fillText('trapped for ' + fmt(seconds), 600, 360);
+    x.fillText((isCheat && NAME ? NAME + " trapped for " : "trapped for ") + fmt(seconds), 600, 360);
     x.fillStyle = '#555'; x.font = '24px "Courier New", monospace';
     x.fillText('[ there is no escape ]', 600, 430);
     return c;
@@ -446,7 +597,7 @@
       const blob = await new Promise(res => c.toBlob(res, 'image/png'));
       const file = new File([blob], 'game-over.png', { type: 'image/png' });
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: 'GAME OVER', text: 'you did this to yourself' });
+        await navigator.share({ files: [file], title: 'GAME OVER', text: isCheat && NAME ? NAME + ", you did this to yourself" : "you did this to yourself" });
       } else {
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'game-over.png';
         document.body.appendChild(a); a.click(); a.remove();
@@ -460,7 +611,8 @@
   function reveal() {
     veil.style.transition = 'opacity 0.8s ease'; veil.style.opacity = '0';
     setTimeout(() => veil.remove(), 850);
-    startDread(); startTimer();
+    startScore(); startTimer();
+    recEl.style.display = 'block'; tcEl.style.display = 'block';
   }
   veil.addEventListener('click', reveal);
   veil.addEventListener('touchstart', ensureAudio, { passive: true });
