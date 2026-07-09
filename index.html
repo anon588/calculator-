@@ -18,12 +18,12 @@
     touch-action: manipulation; cursor: crosshair;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
   .apparition { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
-  .uiScrim { position: fixed; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(ellipse at center, rgba(0,0,0,.5) 0%, rgba(0,0,0,.72) 68%, rgba(0,0,0,.88) 100%); }
-  .apparition img { position: absolute; inset: 0; margin: auto; width: 100%; height: 100%; object-fit: contain;
-    opacity: 0; filter: grayscale(.05) contrast(1.1) brightness(1.14) saturate(1.12);
-    mix-blend-mode: normal; transform-origin: 50% 50%; will-change: opacity, transform;
-    transition: opacity 2.6s var(--ease); }
-  .apparition img.show { opacity: var(--op, .96); animation: breathe 16s ease-in-out infinite; }
+  .uiScrim { position: fixed; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(ellipse at center, rgba(0,0,0,0) 30%, rgba(0,0,0,.5) 80%, rgba(0,0,0,.8) 100%); }
+  .apparition img { position: absolute; inset: 0; margin: auto; width: 100%; height: 100%; object-fit: cover; object-position: center 38%;
+    opacity: 0; filter: none;
+    mix-blend-mode: normal; transform-origin: 50% 42%; will-change: opacity, transform;
+    transition: opacity 2.2s var(--ease); }
+  .apparition img.show { opacity: var(--op, .8); animation: breathe 16s ease-in-out infinite; }
   .apparition img.loom { opacity: 1 !important; animation: lean 6s ease-in-out infinite; }
   @keyframes breathe { 0%,100% { transform: scale(1.05) translateY(0) rotate(0deg); } 50% { transform: scale(1.1) translateY(-1%) rotate(.3deg); } }
   @keyframes lean { 0% { transform: scale(1.12) translate(0,0) rotate(.3deg); } 35% { transform: scale(1.2) translate(-1.5%,1%) rotate(-.8deg); } 70% { transform: scale(1.18) translate(1.5%,-1%) rotate(.9deg); } 100% { transform: scale(1.12) translate(0,0) rotate(.3deg); } }
@@ -47,7 +47,7 @@
   @keyframes recblink { 0%,100%{opacity:1} 50%{opacity:0.15} }
   .tc { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 14px); right: 18px; z-index: 40; pointer-events: none; color: #c8c8c8; font-size: 12px; letter-spacing: 1px; text-shadow: 0 0 6px #000; opacity: 0; transition: opacity 1s; font-variant-numeric: tabular-nums; }
   .tracking { position: fixed; left: 0; width: 100%; height: 13%; z-index: 8; pointer-events: none; opacity: 0; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(200,200,200,0.16), rgba(255,255,255,0)); mix-blend-mode: screen; }
-  .stage { position: relative; z-index: 10; text-align: center; padding: 18px; width: 100%; max-width: 680px; text-shadow: 0 0 22px #000, 0 0 10px #000; }
+  .stage { position: relative; z-index: 10; text-align: center; padding: 30px 26px; width: 100%; max-width: 620px; border-radius: 20px; background: rgba(8,0,4,.72); border: 1px solid rgba(150,0,0,.35); box-shadow: 0 0 50px rgba(0,0,0,.7), inset 0 0 30px rgba(0,0,0,.6); backdrop-filter: blur(7px) saturate(.85); -webkit-backdrop-filter: blur(7px) saturate(.85); text-shadow: 0 0 22px #000, 0 0 10px #000; }
   .gameover { font-size: clamp(40px, 13vw, 116px); font-weight: 900; letter-spacing: 4px; color: #860000; text-shadow: 0 0 4px rgba(255,0,0,.8), 0 0 22px rgba(255,0,0,.4), 3px 0 0 #2a0000, -3px 0 0 #460000; position: relative; animation: pulseText 3s ease-in-out infinite; filter: saturate(1.15); }
   @keyframes pulseText { 0%,100% { opacity: .9; transform: scale(1); } 50% { opacity: 1; transform: scale(1.015); } }
   .gameover::before, .gameover::after { content: "GAME OVER"; position: absolute; top: 0; left: 0; width: 100%; overflow: hidden; }
@@ -103,9 +103,38 @@
   .veil { position: fixed; inset: 0; z-index: 50; background: #000; color: #5a0000; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 18px; text-align: center; cursor: pointer; padding: 24px; transition: opacity .9s var(--ease); }
   .veil .big { font-size: clamp(20px, 6vw, 34px); letter-spacing: 4px; color: #7a0000; text-shadow: 0 0 10px rgba(255,0,0,.4); animation: pulseText 2.2s ease-in-out infinite; }
   .veil .small { font-size: 12px; color: #555; letter-spacing: 2px; }
+
+  /* ===== DOPAMINE LAYER ===== */
+  .hud { position: fixed; left: 0; right: 0; top: calc(env(safe-area-inset-top) + 8px); z-index: 45; display: flex; align-items: center; gap: 10px; padding: 8px 14px; pointer-events: none; font-family: "Courier New", monospace; }
+  .hud .obsWrap { flex: 1; max-width: 220px; }
+  .hud .obsLabel { font-size: 9px; letter-spacing: 3px; color: #c08; text-shadow: 0 0 6px #000; margin-bottom: 3px; }
+  .hud .obsBar { height: 8px; border-radius: 6px; background: rgba(40,0,20,.6); border: 1px solid rgba(180,0,100,.4); overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,.6); }
+  .hud .obsFill { height: 100%; width: 0%; background: linear-gradient(90deg,#8b0044,#ff2b8a,#ff7ad0); box-shadow: 0 0 12px #ff2b8a; transition: width .6s cubic-bezier(.2,.8,.2,1); }
+  .hud .night { font-size: 11px; letter-spacing: 2px; color: #d98; text-shadow: 0 0 8px #000; }
+  .hud .relics { font-size: 11px; letter-spacing: 1px; color: #9c9; text-shadow: 0 0 8px #000; }
+  .float { position: fixed; left: 50%; top: 38%; transform: translate(-50%,-50%); z-index: 70; color: #ff5fae; font-family: "Courier New", monospace; font-size: clamp(16px,5vw,26px); font-weight: 900; letter-spacing: 2px; text-shadow: 0 0 16px #ff2b8a, 0 0 6px #000; pointer-events: none; opacity: 0; }
+  .float.show { animation: floatPop 1.5s cubic-bezier(.2,.9,.2,1) forwards; }
+  @keyframes floatPop { 0%{opacity:0;transform:translate(-50%,-30%) scale(.7)} 18%{opacity:1;transform:translate(-50%,-50%) scale(1.1)} 80%{opacity:1;transform:translate(-50%,-55%) scale(1)} 100%{opacity:0;transform:translate(-50%,-70%) scale(.95)} }
+  .relic { position: fixed; width: 64px; height: 64px; border-radius: 50%; z-index: 6; opacity: 0; pointer-events: auto; cursor: pointer; background: radial-gradient(circle, rgba(255,120,200,.18), rgba(255,120,200,0) 70%); }
+  .relic.found { opacity: 0 !important; pointer-events: none; }
+  .choices { position: fixed; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 120px); z-index: 46; display: flex; flex-direction: column; gap: 10px; align-items: center; padding: 0 18px; pointer-events: none; opacity: 0; transition: opacity 1s var(--ease); }
+  .choices.on { opacity: 1; pointer-events: auto; }
+  .choices .q { color: #e9c; font-size: 13px; letter-spacing: 1px; text-shadow: 0 0 10px #000; margin-bottom: 4px; text-align: center; }
+  .choices button { width: 100%; max-width: 420px; padding: 13px; background: rgba(12,0,8,.8); border: 1px solid rgba(255,40,140,.5); color: #ffb6e0; border-radius: 12px; font-family: "Courier New", monospace; font-size: 14px; letter-spacing: 1px; box-shadow: 0 0 20px rgba(255,40,140,.2); cursor: pointer; transition: transform .15s, background .2s; }
+  .choices button:active { transform: scale(.97); background: rgba(40,0,20,.9); }
+  .calm { position: fixed; inset: 0; z-index: 44; pointer-events: none; opacity: 0; transition: opacity 2.5s var(--ease); background: radial-gradient(ellipse at center, rgba(255,220,240,.16), rgba(120,180,255,.06) 50%, rgba(0,0,0,0) 80%); }
+  .calm.on { opacity: 1; }
 </style>
 </head>
 <body>
+<div class="calm" id="calm"></div>
+<div class="hud" id="hud" style="display:none;">
+  <div class="obsWrap"><div class="obsLabel">HER OBSESSION</div><div class="obsBar"><div class="obsFill" id="obsFill"></div></div></div>
+  <div class="relics" id="relics">0/5</div>
+  <div class="night" id="nightTag"></div>
+</div>
+<div class="float" id="float"></div>
+<div class="choices" id="choices"><div class="q" id="choiceQ"></div></div>
 <div class="apparition" id="apparition"></div>
   <div class="uiScrim"></div>
 <div class="appTint"></div>
@@ -180,7 +209,7 @@ const PICS=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA4KCw0LCQ4N
       apparitionEl=byId('apparition');
   var curseCode=curse.querySelector('.code'), curseCd=curse.querySelector('.cd'),
       curseUndo=curse.querySelector('.undo'), curseStamp=curse.querySelector('.stamp'), curseDesc=curse.querySelector('.desc');
-  var dreadLevel=0, appPermanent=false, appBaseOp=0.9, seconds=0, started=false, veilOpened=false, curseActive=false, curseUndos=0, appIdx=-1, scareCooldown=0, leaveClicks=0, takeoverActive=false;
+  var dreadLevel=0, appPermanent=false, appBaseOp=0.85, seconds=0, started=false, veilOpened=false, curseActive=false, curseUndos=0, appIdx=-1, scareCooldown=0, leaveClicks=0, takeoverActive=false;
 
   // SPEECH
   var voice=null;
@@ -253,6 +282,7 @@ const PICS=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA4KCw0LCQ4N
     ng.gain.setValueAtTime(strong?1.0:0.7,t); ng.gain.exponentialRampToValueAtTime(0.001,t+dur); noise.start(t); noise.stop(t+dur);
     [800,1200,1600].forEach(function(f){ var o=audioCtx.createOscillator(); o.type='sawtooth'; o.frequency.value=f*(1+(Math.random()*0.04-0.02)); var og=audioCtx.createGain(); og.gain.setValueAtTime(strong?0.18:0.1,t); og.gain.exponentialRampToValueAtTime(0.001,t+dur*0.8); o.connect(og); og.connect(master); o.start(t); o.stop(t+dur); });
     var b=audioCtx.createOscillator(); b.type='sine'; b.frequency.setValueAtTime(strong?90:70,t); b.frequency.exponentialRampToValueAtTime(28,t+dur); var bg=audioCtx.createGain(); bg.gain.setValueAtTime(strong?0.6:0.35,t); bg.gain.exponentialRampToValueAtTime(0.001,t+dur); b.connect(bg); bg.connect(master); b.start(t); b.stop(t+dur); }
+  function soften(){ if(!audioCtx) return; try{ var t=audioCtx.currentTime; droneGain.gain.setTargetAtTime(0.06,t,1.5); stringGain.gain.setTargetAtTime(0.02,t,1.5); }catch(e){} }
   function intensify(L){ if(!audioCtx) return; droneGain.gain.value=0.14+L*0.12; stringGain.gain.value=0.04+L*0.08; beatRate=Math.max(620,1150-L*530); if(heartTimer){ clearInterval(heartTimer); heartTimer=setInterval(function(){ if(audioCtx) thump(beatRate%2===0?0.9:0.5); },beatRate); } }
   var lullStep=0; var lullaby=[523.25,659.25,783.99,659.25,587.33,523.25,440.0,523.25,493.88,587.33,698.46,587.33,523.25,440.0,392.0,440.0];
   function bell(freq,t,vol,dur){ if(!audioCtx||!bellBus) return; var o=audioCtx.createOscillator(); o.type='sine'; o.frequency.value=freq; o.detune.value=(Math.random()*10-5); var o2=audioCtx.createOscillator(); o2.type='sine'; o2.frequency.value=freq*2.01; o2.detune.value=4; var g=audioCtx.createGain(); g.gain.value=0; o.connect(g); o2.connect(g); g.connect(bellBus); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+dur); o.start(t); o2.start(t); o.stop(t+dur); o2.stop(t+dur); }
@@ -263,7 +293,7 @@ const PICS=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA4KCw0LCQ4N
   function cycleApparition(){
     if(appIdx>=0) appImgs[appIdx].classList.remove('show','loom');
     var next=Math.floor(Math.random()*appImgs.length); appIdx=next; var im=appImgs[appIdx];
-    var op=appPermanent?(0.96+dreadLevel*0.04):appBaseOp;
+    var op=appPermanent?(0.9+dreadLevel*0.05):appBaseOp;
     im.style.setProperty('--op',op.toFixed(2));
     im.classList.add('show');
     if(!appPermanent&&Math.random()<0.5) im.classList.add('loom');
@@ -293,7 +323,7 @@ const PICS=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA4KCw0LCQ4N
   // CURSE (non-blocking)
   var curseCodes=["XOF-7-13-09","DOA-3-66-01","NULL-VOID-77","RIP-4-EVER","N01-EXIT-90"];
   var curseFails=["the code is wrong","she rejects you","you are already marked","too late","the curse only grows","she owns you now"];
-  function closeCurse(){ if(!curse.classList.contains('on')) return; curse.classList.remove('on'); appPermanent=true; cursedTag.style.opacity='1'; }
+  function closeCurse(){ if(!curse.classList.contains('on')) return; curse.classList.remove('on'); appPermanent=true; cursedTag.style.opacity='1'; if(appIdx>=0){ var im=appImgs[appIdx]; im.style.setProperty('--op','0.92'); im.classList.add('show'); } }
   function startCurse(){ if(curseActive) return; curseActive=true; curseUndos=0; curseStamp.style.display='none'; curseUndo.style.display='';
     curseCode.textContent=curseCodes[Math.floor(Math.random()*curseCodes.length)]; curseCd.textContent='lifting in 10';
     curse.classList.add('on'); sting(true); speak("you are cursed forever");
@@ -331,10 +361,61 @@ const PICS=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA4KCw0LCQ4N
   });
   findBtn.addEventListener('click',function(e){ e.stopPropagation(); ensureAudio(); triggerScare(); });
 
-  function reveal(){ if(veilOpened) return; veilOpened=true; veil.style.opacity='0'; setTimeout(function(){ if(veil.parentNode) veil.parentNode.removeChild(veil); },900); startScore(); startTimer(); recEl.style.opacity='1'; tcEl.style.opacity='1'; setTimeout(function(){ if(!curseActive) startCurse(); },6000); }
+  function reveal(){ if(veilOpened) return; veilOpened=true; veil.style.opacity='0'; setTimeout(function(){ if(veil.parentNode) veil.parentNode.removeChild(veil); },900); startScore(); startTimer(); recEl.style.opacity='1'; tcEl.style.opacity='1'; setTimeout(function(){ if(!curseActive) startCurse(); },6000); showHud(); }
   veil.addEventListener('click',reveal);
   veil.addEventListener('touchstart',ensureAudio,{passive:true});
+  setTimeout(reveal,2600);
   document.addEventListener('mousemove',function(){ if(Math.random()>0.985){ document.body.style.filter='hue-rotate('+(Math.random()*40-20)+'deg) contrast(1.15)'; setTimeout(function(){document.body.style.filter='';},90); } });
+
+  /* ===== DOPAMINE ENGINE ===== */
+  var hud=byId('hud'), obsFill=byId('obsFill'), relicsEl=byId('relics'), nightTag=byId('nightTag'),
+      floatEl=byId('float'), choicesEl=byId('choices'), choiceQ=byId('choiceQ'), calmEl=byId('calm');
+  var SAVE='haunt_save_v1';
+  var save=JSON.parse(localStorage.getItem(SAVE)||'{}');
+  var obsession=save.obsession||0, relicsFound=(save.relics||[]).slice();
+  if(!sessionStorage.getItem('haunt_session')){ sessionStorage.setItem('haunt_session','1'); save.night=(save.night||0)+1; localStorage.setItem(SAVE,JSON.stringify(save)); }
+  var night=save.night||1;
+  function persist(){ save.obsession=obsession; save.relics=relicsFound; localStorage.setItem(SAVE,JSON.stringify(save)); }
+  function showHud(){ hud.style.display='flex'; obsFill.style.width=Math.min(100,obsession*10)+'%'; relicsEl.textContent=relicsFound.length+'/5'; nightTag.textContent='NIGHT '+night; }
+  var floats=['she felt that','closer','she smiled','you belong to her','one more','she sees you','mine'];
+  function popFloat(t){ floatEl.textContent=t||floats[Math.floor(Math.random()*floats.length)]; floatEl.classList.remove('show'); void floatEl.offsetWidth; floatEl.classList.add('show'); }
+  function addLove(n){ obsession=Math.min(10,obsession+n); obsFill.style.width=(obsession*10)+'%'; persist();
+    if(obsession>=10 && !save.maxed){ save.maxed=true; persist(); popFloat('SHE IS YOURS'); speak('you are mine'); }
+    else if(Math.random()<0.5) popFloat(); }
+  var relicSpots=[[14,30],[82,22],[20,70],[78,66],[50,84]];
+  relicSpots.forEach(function(p,i){
+    if(relicsFound.indexOf(i)>=0) return;
+    var r=document.createElement('div'); r.className='relic'; r.style.left=p[0]+'%'; r.style.top=p[1]+'%'; r.style.transform='translate(-50%,-50%)';
+    r.setAttribute('aria-label','relic'); document.body.appendChild(r);
+    r.addEventListener('click',function(e){ e.stopPropagation(); if(r.classList.contains('found')) return; r.classList.add('found'); relicsFound.push(i); relicsEl.textContent=relicsFound.length+'/5'; persist();
+      popFloat('RELIC '+relicsFound.length+'/5'); sting(true); speak('you found me'); addLove(1);
+      if(relicsFound.length>=5){ popFloat('THE TRUTH UNLOCKED'); var t=document.createElement('div'); t.className='float'; t.style.top='50%'; t.style.color='#9f9'; t.textContent='she was you all along'; t.classList.add('show'); document.body.appendChild(t); }
+    });
+  });
+  var questions=[
+    {q:'she asks: do you love her?', a:['yes','no','i don\'t know'], r:['she glows','she goes cold','she waits']},
+    {q:'she asks: will you stay?', a:['forever','just tonight','make me','i can\'t'], r:['she holds you','she laughs softly','she leans in','she weeps']},
+    {q:'she asks: who do you belong to?', a:['you','myself','no one','him'], r:['she is pleased','she is amused','she is empty','she is enraged']}
+  ];
+  var qIdx=0;
+  function askQuestion(){ var qq = qIdx<questions.length ? questions[qIdx++] : questions[Math.floor(Math.random()*questions.length)]; openChoice(qq); }
+  function openChoice(qq){
+    choicesEl.innerHTML='<div class="q"></div>'; choiceQ=choicesEl.querySelector('.q'); choiceQ.textContent=qq.q;
+    qq.a.forEach(function(txt,i){
+      var b=document.createElement('button'); b.textContent=txt;
+      b.addEventListener('click',function(e){ e.stopPropagation(); ensureAudio(); choicesEl.classList.remove('on');
+        popFloat(qq.r[i]||'she watches'); speak(qq.r[i]||'mine'); addLove(1+Math.floor(Math.random()*2));
+        if(Math.random()<0.6) calmMoment(); });
+      choicesEl.appendChild(b);
+    });
+    choicesEl.classList.add('on');
+  }
+  function calmMoment(){ calmEl.classList.add('on'); popFloat('breathe'); if(audioReady) soften(); setTimeout(function(){ calmEl.classList.remove('on'); }, 4200+Math.random()*2500); }
+  findBtn.addEventListener('click',function(){ addLove(1); });
+  leaveBtn.addEventListener('click',function(){ addLove(1); });
+  shareBtn.addEventListener('click',function(){ addLove(1); });
+  setInterval(function(){ if(curse.classList.contains('on')||takeoverActive) return; if(Math.random()<0.4) askQuestion(); }, 14000);
+  setInterval(function(){ if(curse.classList.contains('on')) return; if(Math.random()<0.25) calmMoment(); }, 21000);
 })();
 </script>
 </body>
