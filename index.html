@@ -17,7 +17,7 @@
     user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
     touch-action: manipulation; cursor: crosshair;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
-  .apparition { position: fixed; inset: 0; z-index: 7; pointer-events: none; overflow: hidden; }
+  .apparition { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
   .apparition img { position: absolute; inset: 0; margin: auto; width: 100%; height: 100%; object-fit: contain;
     opacity: 0; filter: grayscale(.05) contrast(1.1) brightness(1.14) saturate(1.12);
     mix-blend-mode: normal; transform-origin: 50% 50%; will-change: opacity, transform;
@@ -46,7 +46,7 @@
   @keyframes recblink { 0%,100%{opacity:1} 50%{opacity:0.15} }
   .tc { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 14px); right: 18px; z-index: 40; pointer-events: none; color: #c8c8c8; font-size: 12px; letter-spacing: 1px; text-shadow: 0 0 6px #000; opacity: 0; transition: opacity 1s; font-variant-numeric: tabular-nums; }
   .tracking { position: fixed; left: 0; width: 100%; height: 13%; z-index: 8; pointer-events: none; opacity: 0; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(200,200,200,0.16), rgba(255,255,255,0)); mix-blend-mode: screen; }
-  .stage { position: relative; z-index: 3; text-align: center; padding: 18px; width: 100%; max-width: 680px; text-shadow: 0 0 18px #000, 0 0 6px #000; }
+  .stage { position: relative; z-index: 8; text-align: center; padding: 18px; width: 100%; max-width: 680px; text-shadow: 0 0 22px #000, 0 0 8px #000; }
   .gameover { font-size: clamp(40px, 13vw, 116px); font-weight: 900; letter-spacing: 4px; color: #860000; text-shadow: 0 0 4px rgba(255,0,0,.8), 0 0 22px rgba(255,0,0,.4), 3px 0 0 #2a0000, -3px 0 0 #460000; position: relative; animation: pulseText 3s ease-in-out infinite; filter: saturate(1.15); }
   @keyframes pulseText { 0%,100% { opacity: .9; transform: scale(1); } 50% { opacity: 1; transform: scale(1.015); } }
   .gameover::before, .gameover::after { content: "GAME OVER"; position: absolute; top: 0; left: 0; width: 100%; overflow: hidden; }
