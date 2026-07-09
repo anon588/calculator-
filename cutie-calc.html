@@ -17,7 +17,8 @@
     user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
     touch-action: manipulation; cursor: crosshair;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
-  .apparition { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+  .apparition { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+  .uiScrim { position: fixed; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(ellipse at center, rgba(0,0,0,.5) 0%, rgba(0,0,0,.72) 68%, rgba(0,0,0,.88) 100%); }
   .apparition img { position: absolute; inset: 0; margin: auto; width: 100%; height: 100%; object-fit: contain;
     opacity: 0; filter: grayscale(.05) contrast(1.1) brightness(1.14) saturate(1.12);
     mix-blend-mode: normal; transform-origin: 50% 50%; will-change: opacity, transform;
@@ -46,7 +47,7 @@
   @keyframes recblink { 0%,100%{opacity:1} 50%{opacity:0.15} }
   .tc { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 14px); right: 18px; z-index: 40; pointer-events: none; color: #c8c8c8; font-size: 12px; letter-spacing: 1px; text-shadow: 0 0 6px #000; opacity: 0; transition: opacity 1s; font-variant-numeric: tabular-nums; }
   .tracking { position: fixed; left: 0; width: 100%; height: 13%; z-index: 8; pointer-events: none; opacity: 0; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(200,200,200,0.16), rgba(255,255,255,0)); mix-blend-mode: screen; }
-  .stage { position: relative; z-index: 8; text-align: center; padding: 18px; width: 100%; max-width: 680px; text-shadow: 0 0 22px #000, 0 0 8px #000; }
+  .stage { position: relative; z-index: 10; text-align: center; padding: 18px; width: 100%; max-width: 680px; text-shadow: 0 0 22px #000, 0 0 10px #000; }
   .gameover { font-size: clamp(40px, 13vw, 116px); font-weight: 900; letter-spacing: 4px; color: #860000; text-shadow: 0 0 4px rgba(255,0,0,.8), 0 0 22px rgba(255,0,0,.4), 3px 0 0 #2a0000, -3px 0 0 #460000; position: relative; animation: pulseText 3s ease-in-out infinite; filter: saturate(1.15); }
   @keyframes pulseText { 0%,100% { opacity: .9; transform: scale(1); } 50% { opacity: 1; transform: scale(1.015); } }
   .gameover::before, .gameover::after { content: "GAME OVER"; position: absolute; top: 0; left: 0; width: 100%; overflow: hidden; }
@@ -65,8 +66,8 @@
   @keyframes pulseHint { 0%,100% { opacity: .28; } 50% { opacity: .75; } }
   .whisper { margin-top: 16px; font-size: 14px; letter-spacing: 2px; color: #b9a9c9; font-style: italic; font-family: Georgia, "Times New Roman", serif; min-height: 22px; opacity: 0; transition: opacity 1.6s var(--ease); text-shadow: 0 0 10px rgba(120,0,140,.6); }
   .hint { margin-top: 18px; font-size: 11px; color: #555; letter-spacing: 2px; animation: pulseHint 2.2s ease-in-out infinite; }
-  .controls { margin-top: 22px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-  .btn { appearance: none; border: 1px solid rgba(122,0,0,.7); background: rgba(30,0,0,.45); color: #d96969; font-family: inherit; font-size: 12px; letter-spacing: 2px; padding: 11px 15px; border-radius: 10px; cursor: pointer; text-transform: uppercase; text-shadow: 0 0 6px rgba(255,0,0,.5); transition: all .2s var(--ease); -webkit-tap-highlight-color: transparent; backdrop-filter: blur(4px); }
+  .controls { margin-top: 22px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 11; }
+  .btn { appearance: none; border: 1px solid rgba(255,90,120,.6); background: rgba(18,0,2,.85); color: #ffd0dc; font-family: inherit; font-size: 12px; letter-spacing: 2px; padding: 11px 15px; border-radius: 10px; cursor: pointer; text-transform: uppercase; text-shadow: 0 0 8px #000; transition: all .2s var(--ease); -webkit-tap-highlight-color: transparent; backdrop-filter: blur(4px); }
   .btn:active { transform: scale(.94); background: rgba(70,0,0,.7); color: #ff6a6a; }
   .btn.find { border-color: rgba(150,0,40,.8); color: #ff7a9a; }
   .btn.leave { border-color: rgba(120,120,120,.5); color: #aaa; }
@@ -106,6 +107,7 @@
 </head>
 <body>
 <div class="apparition" id="apparition"></div>
+  <div class="uiScrim"></div>
 <div class="appTint"></div>
 <div class="appVeil"></div>
 <div class="eyes" id="eyes"></div>
