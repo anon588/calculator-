@@ -20,15 +20,15 @@
   }
 
   .vignette { position: fixed; inset: 0; pointer-events: none; z-index: 5;
-    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 26%, rgba(0,0,0,0.64) 64%, rgba(0,0,0,0.98) 100%);
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 24%, rgba(0,0,0,0.66) 62%, rgba(0,0,0,0.98) 100%);
     animation: breathe 7s ease-in-out infinite; }
   @keyframes breathe { 0%,100% { opacity: 0.85; } 50% { opacity: 1; } }
 
   .scanlines { position: fixed; inset: 0; pointer-events: none; z-index: 6;
-    background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.4) 3px, rgba(0,0,0,0.4) 4px);
+    background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.42) 3px, rgba(0,0,0,0.42) 4px);
     mix-blend-mode: multiply; opacity: 0.85; }
 
-  .grain { position: fixed; inset: -20%; z-index: 9; pointer-events: none; opacity: 0.12;
+  .grain { position: fixed; inset: -20%; z-index: 9; pointer-events: none; opacity: 0.13;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 220px 220px; animation: grain 0.4s steps(3) infinite; }
   @keyframes grain { 0%{transform:translate(0,0)} 33%{transform:translate(-6%,4%)} 66%{transform:translate(5%,-5%)} 100%{transform:translate(0,0)} }
@@ -99,8 +99,6 @@
 
   .watcher { position: fixed; left: 50%; bottom: -10%; transform: translateX(-50%) scale(0.35); z-index: 1; width: 46vw; max-width: 360px; pointer-events: none; opacity: 0; transition: transform 60s linear, opacity 6s ease; filter: blur(6px) contrast(1.4) brightness(0.5); }
   .watcher.show { opacity: 0.55; }
-  .watcher svg { display: block; width: 100%; height: auto; }
-  .watcher .weyes { animation: watcherBlink 6s infinite; transform-origin: center; }
 
   .crawler { position: fixed; left: 0; width: 100%; z-index: 12; pointer-events: none; display: none; align-items: flex-end; justify-content: center; opacity: 0; }
   .crawler.on { display: flex; }
@@ -110,62 +108,24 @@
 
   .sublime { position: fixed; inset: 0; z-index: 80; pointer-events: none; display: none; align-items: center; justify-content: center; background: #000; }
   .sublime.on { display: flex; }
-  .sublime .face { width: 58vw; max-width: 320px; filter: grayscale(1) contrast(1.6) brightness(0.5); }
+  .sublime svg { width: 60vw; max-width: 340px; height: auto; filter: grayscale(0.2) contrast(1.5) brightness(0.55); opacity: 0.95; }
 
   .staticflash { position: fixed; inset: 0; z-index: 8; pointer-events: none; background: rgba(255,255,255,0.05); opacity: 0; }
 
-  /* ── REAL PHOTO-STYLE FACE (layered CSS, not a cartoon) ── */
+  /* ── THE WOMAN (realistic shaded SVG portrait) ── */
   .facebox { position: fixed; inset: 0; z-index: 90; display: none; align-items: center; justify-content: center; background: #000; pointer-events: none; overflow: hidden; }
   .facebox.on { display: flex; animation: fbShake 0.07s infinite; }
   @keyframes fbShake { 0%{transform:translate(0,0)} 25%{transform:translate(-18px,12px)} 50%{transform:translate(14px,-10px)} 75%{transform:translate(-12px,-14px)} 100%{transform:translate(13px,9px)} }
-  .face {
-    position: relative; width: 76vw; max-width: 460px; aspect-ratio: 3/4;
-    background:
-      radial-gradient(ellipse 38% 30% at 32% 40%, #050505 0%, #050505 55%, transparent 60%),
-      radial-gradient(ellipse 38% 30% at 68% 40%, #050505 0%, #050505 55%, transparent 60%),
-      radial-gradient(ellipse 12% 9% at 32% 42%, #c8c4bd 0%, #8a8780 60%, #2a2824 100%),
-      radial-gradient(ellipse 12% 9% at 68% 42%, #c8c4bd 0%, #8a8780 60%, #2a2824 100%),
-      radial-gradient(ellipse 70% 78% at 50% 52%, #c9c4ba 0%, #9a958b 45%, #4a463f 80%, #161412 100%);
-    border-radius: 48% 48% 46% 46% / 56% 56% 44% 44%;
-    box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 0 50px rgba(0,0,0,0.8);
-    filter: grayscale(1) contrast(1.45) brightness(0.62);
-    animation: fbZoom 0.5s ease-out forwards;
-  }
-  @keyframes fbZoom { 0% { transform: scale(0.25) rotate(-7deg); opacity: 0; } 10% { transform: scale(1.15) rotate(4deg); opacity: 1; } 100% { transform: scale(1.45) rotate(-2deg); opacity: 1; } }
-  /* sunken cheeks / shadow */
-  .face::before { content:""; position:absolute; inset:0; border-radius: inherit;
-    background: radial-gradient(ellipse 20% 28% at 28% 58%, rgba(0,0,0,0.7), transparent 60%),
-              radial-gradient(ellipse 20% 28% at 72% 58%, rgba(0,0,0,0.7), transparent 60%),
-              radial-gradient(ellipse 50% 18% at 50% 78%, rgba(0,0,0,0.85), transparent 70%);
-    mix-blend-mode: multiply; }
-  /* mouth — jagged, asymmetric, forced smile */
-  .mouth { position: absolute; left: 50%; top: 70%; transform: translateX(-50%) rotate(-3deg); width: 46%; height: 22%;
-    background: linear-gradient(#0a0a0a, #000);
-    border-radius: 0 0 60% 60% / 0 0 100% 100%;
-    box-shadow: 0 0 18px rgba(0,0,0,0.9);
-    clip-path: polygon(0% 0%, 12% 18%, 26% 2%, 40% 20%, 55% 0%, 70% 20%, 84% 2%, 100% 16%, 100% 100%, 0% 100%);
-  }
-  .teeth { position:absolute; left:50%; top:71%; transform:translateX(-50%) rotate(-3deg); width:40%; height:14%;
-    background:
-      repeating-linear-gradient(90deg, #d8d4cb 0 6%, #b3afa6 6% 7%, transparent 7% 13%);
-    border-radius: 0 0 50% 50%; opacity:0.85; mix-blend-mode: screen; }
-  /* pupils — tiny, dead */
-  .pupil { position:absolute; top:42%; width:5%; height:7%; background:#000; border-radius:50%; box-shadow:0 0 6px #000; }
-  .pupil.l { left:30%; } .pupil.r { left:65%; }
-  /* film grain + scanlines baked onto the face */
-  .facegrain { position:absolute; inset:0; border-radius:inherit; pointer-events:none; opacity:0.35; mix-blend-mode:overlay;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
-    background-size:160px 160px; }
-  /* red flash */
-  .facebox .red { position:absolute; inset:0; background:#ff0000; opacity:0; mix-blend-mode:screen; animation: redFlash 0.55s ease-out forwards; }
+  .facebox svg.woman { width: 82vw; max-width: 460px; height: auto; filter: contrast(1.4) brightness(0.6) saturate(0.85); animation: fbZoom 0.45s ease-out forwards; }
+  @keyframes fbZoom { 0% { transform: scale(0.3) rotate(-6deg); opacity: 0; } 10% { transform: scale(1.12) rotate(3deg); opacity: 1; } 100% { transform: scale(1.4) rotate(-1deg); opacity: 1; } }
+  .facebox .red { position: absolute; inset: 0; background: #ff0000; opacity: 0; mix-blend-mode: screen; animation: redFlash 0.55s ease-out forwards; }
   @keyframes redFlash { 0%{opacity:0.95} 100%{opacity:0} }
-  .facebox .bar { position:absolute; left:0; width:100%; height:3px; background:#fff; opacity:0.7; animation: barJump 0.12s infinite; }
+  .facebox .bar { position: absolute; left: 0; width: 100%; height: 3px; background: #fff; opacity: 0.7; animation: barJump 0.12s infinite; }
   @keyframes barJump { 0%{top:8%} 50%{top:58%} 100%{top:86%} }
 
   /* ── BLOOD ON SCREEN ── */
   .screenblood { position: fixed; inset: 0; z-index: 92; pointer-events: none; opacity: 0; transition: opacity 0.4s ease;
-    background:
-      radial-gradient(circle at 20% 30%, rgba(120,0,0,0.9), transparent 12%),
+    background: radial-gradient(circle at 20% 30%, rgba(120,0,0,0.9), transparent 12%),
       radial-gradient(circle at 78% 22%, rgba(140,0,0,0.85), transparent 9%),
       radial-gradient(circle at 50% 80%, rgba(100,0,0,0.8), transparent 16%),
       radial-gradient(circle at 35% 65%, rgba(150,0,0,0.7), transparent 7%);
@@ -176,15 +136,14 @@
   .curse { position: fixed; inset: 0; z-index: 96; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 18px; background: #000; padding: 30px; text-align: center; }
   .curse.on { display: flex; animation: curseIn 0.4s steps(3) forwards; }
   @keyframes curseIn { 0%{opacity:0; background:#fff} 100%{opacity:1; background:#000} }
-  .curse .title { font-size: clamp(30px, 9vw, 76px); font-weight: 900; letter-spacing: 6px; color: #8b0000;
-    text-shadow: 0 0 18px #ff0000, 4px 0 0 #2a0000, -4px 0 0 #4a0000; animation: tkFlick 0.2s steps(2) infinite; }
+  .curse .title { font-size: clamp(30px, 9vw, 76px); font-weight: 900; letter-spacing: 6px; color: #8b0000; text-shadow: 0 0 18px #ff0000, 4px 0 0 #2a0000, -4px 0 0 #4a0000; animation: tkFlick 0.2s steps(2) infinite; }
   @keyframes tkFlick { 0%,100%{opacity:1} 50%{opacity:0.4} }
   .curse .desc { font-size: 14px; letter-spacing: 2px; color: #bdbdbd; line-height: 1.7; max-width: 520px; }
   .curse .code { font-size: 22px; letter-spacing: 4px; color: #ff3b3b; text-shadow: 0 0 10px #ff0000; font-variant-numeric: tabular-nums; }
   .curse .cd { font-size: 13px; color: #777; letter-spacing: 2px; }
-  .curse .undo { appearance:none; border:1px solid #7a0000; background:rgba(40,0,0,0.6); color:#ff7a7a; font-family:inherit; font-size:13px; letter-spacing:3px; padding:13px 20px; border-radius:9px; text-transform:uppercase; cursor:pointer; }
+  .curse .undo { appearance: none; border: 1px solid #7a0000; background: rgba(40,0,0,0.6); color: #ff7a7a; font-family: inherit; font-size: 13px; letter-spacing: 3px; padding: 13px 20px; border-radius: 9px; text-transform: uppercase; cursor: pointer; }
   .curse .undo:active { transform: scale(0.94); }
-  .curse .stamp { font-size: clamp(26px, 8vw, 64px); font-weight: 900; letter-spacing: 4px; color: #5a0000; text-shadow: 0 0 14px rgba(255,0,0,0.5); transform: rotate(-4deg); animation: stampIn 0.18s steps(2) forwards; display:none; }
+  .curse .stamp { font-size: clamp(26px, 8vw, 64px); font-weight: 900; letter-spacing: 4px; color: #5a0000; text-shadow: 0 0 14px rgba(255,0,0,0.5); transform: rotate(-4deg); animation: stampIn 0.18s steps(2) forwards; display: none; }
   @keyframes stampIn { 0%{opacity:0; transform:rotate(-4deg) scale(2.4)} 100%{opacity:1; transform:rotate(-4deg) scale(1)} }
 
   .veil { position: fixed; inset: 0; z-index: 50; background: #000; color: #5a0000; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 18px; text-align: center; cursor: pointer; padding: 24px; }
@@ -200,17 +159,15 @@
   <svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
     <defs><radialGradient id="wg" cx="50%" cy="20%" r="80%"><stop offset="0%" stop-color="#2a0000"/><stop offset="60%" stop-color="#0c0000"/><stop offset="100%" stop-color="#000"/></radialGradient></defs>
     <ellipse cx="100" cy="150" rx="70" ry="120" fill="url(#wg)"/>
-    <g class="weyes" fill="#000"><ellipse cx="74" cy="120" rx="16" ry="26"/><ellipse cx="126" cy="120" rx="16" ry="26"/></g>
+    <g fill="#000"><ellipse cx="74" cy="120" rx="16" ry="26"/><ellipse cx="126" cy="120" rx="16" ry="26"/></g>
     <circle cx="74" cy="124" r="4" fill="#b30000"/><circle cx="126" cy="124" r="4" fill="#b30000"/>
     <path d="M60 230 Q100 270 140 230 Q100 250 60 230 Z" fill="#1a0000"/>
-    <path d="M82 235 Q100 300 118 235 Q100 255 82 235 Z" fill="#3a0000"/>
   </svg>
 </div>
 
 <div class="crawler" id="crawlerUp" style="bottom:0;">
   <svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
     <path d="M100 10 Q40 60 60 120 Q20 160 70 200 L130 200 Q180 160 140 120 Q160 60 100 10 Z" fill="#0a0a0a"/>
-    <g stroke="#000" stroke-width="3" opacity="0.9"><path d="M100 12 Q60 40 50 110"/><path d="M100 12 Q140 40 150 110"/><path d="M100 14 Q80 50 70 130"/><path d="M100 14 Q120 50 130 130"/></g>
     <ellipse cx="100" cy="120" rx="46" ry="60" fill="#d9d2c7"/>
     <ellipse cx="80" cy="112" rx="13" ry="22" fill="#000"/><ellipse cx="120" cy="112" rx="13" ry="22" fill="#000"/>
     <circle cx="80" cy="118" r="3" fill="#5a0000"/><circle cx="120" cy="118" r="3" fill="#5a0000"/>
@@ -220,7 +177,6 @@
 <div class="crawler" id="crawlerDown" style="top:0;">
   <svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
     <path d="M100 230 Q40 180 60 120 Q20 80 70 40 L130 40 Q180 80 140 120 Q160 180 100 230 Z" fill="#0a0a0a"/>
-    <g stroke="#000" stroke-width="3" opacity="0.9"><path d="M100 228 Q60 200 50 130"/><path d="M100 228 Q140 200 150 130"/><path d="M100 226 Q80 190 70 110"/><path d="M100 226 Q120 190 130 110"/></g>
     <ellipse cx="100" cy="120" rx="46" ry="60" fill="#cfc7ba"/>
     <ellipse cx="80" cy="112" rx="12" ry="20" fill="#000"/><ellipse cx="120" cy="112" rx="12" ry="20" fill="#000"/>
     <circle cx="80" cy="118" r="3" fill="#7a0000"/><circle cx="120" cy="118" r="3" fill="#7a0000"/>
@@ -236,24 +192,87 @@
   <div class="whisper" id="whisper"></div>
   <div class="hint">[ tap anywhere — it is listening ]</div>
   <div class="controls">
-    <button class="btn find" id="findBtn">👁 let it find you</button>
+    <button class="btn find" id="findBtn">👁 let her find you</button>
     <button class="btn leave" id="leaveBtn">LET ME OUT</button>
     <button class="btn" id="shareBtn">share the curse</button>
   </div>
 </div>
 
-<div class="sublime" id="sublime"><div class="face" style="width:54vw;max-width:300px;aspect-ratio:3/4;"></div></div>
+<div class="sublime" id="sublime"></div>
 
+<!-- THE WOMAN -->
 <div class="facebox" id="facebox">
   <div class="red"></div><div class="bar"></div>
-  <div class="face"><div class="facegrain"></div><div class="pupil l"></div><div class="pupil r"></div><div class="mouth"></div><div class="teeth"></div></div>
+  <svg class="woman" viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="skin" cx="50%" cy="42%" r="62%">
+        <stop offset="0%" stop-color="#efe7dc"/><stop offset="55%" stop-color="#d8cdbc"/><stop offset="85%" stop-color="#a99c89"/><stop offset="100%" stop-color="#6f6555"/>
+      </radialGradient>
+      <linearGradient id="hair" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#1c1714"/><stop offset="60%" stop-color="#0d0a08"/><stop offset="100%" stop-color="#000"/>
+      </linearGradient>
+      <radialGradient id="cheek" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#c98b86" stop-opacity="0.5"/><stop offset="100%" stop-color="#c98b86" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="eyevoid" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#000"/><stop offset="70%" stop-color="#0a0000"/><stop offset="100%" stop-color="#1a0000"/>
+      </radialGradient>
+      <filter id="soft"><feGaussianBlur stdDeviation="3"/></filter>
+    </defs>
+    <!-- hair back -->
+    <path d="M70 120 Q40 250 60 420 Q90 500 200 510 Q310 500 340 420 Q360 250 330 120 Q300 40 200 36 Q100 40 70 120 Z" fill="url(#hair)"/>
+    <!-- neck -->
+    <path d="M165 380 Q165 450 150 500 L250 500 Q235 450 235 380 Z" fill="#c9bca8"/>
+    <path d="M165 380 Q200 410 235 380 L235 410 Q200 440 165 410 Z" fill="#9a8c79" opacity="0.6"/>
+    <!-- face -->
+    <path d="M118 150 Q110 280 150 360 Q200 410 250 360 Q290 280 282 150 Q260 90 200 86 Q140 90 118 150 Z" fill="url(#skin)"/>
+    <!-- cheeks -->
+    <ellipse cx="155" cy="265" rx="34" ry="24" fill="url(#cheek)"/>
+    <ellipse cx="245" cy="265" rx="34" ry="24" fill="url(#cheek)"/>
+    <!-- under-eye shadow -->
+    <path d="M138 225 Q160 245 182 230 Q160 250 138 235 Z" fill="#7a6a78" opacity="0.5" filter="url(#soft)"/>
+    <path d="M218 230 Q240 245 262 225 Q240 250 218 235 Z" fill="#7a6a78" opacity="0.5" filter="url(#soft)"/>
+    <!-- brows -->
+    <path d="M138 205 Q160 196 183 206 Q160 202 138 212 Z" fill="#2a201a"/>
+    <path d="M217 206 Q240 196 262 205 Q240 202 217 212 Z" fill="#2a201a"/>
+    <!-- eyes -->
+    <g>
+      <path d="M140 228 Q160 216 182 228 Q160 240 140 228 Z" fill="#e9e3d8"/>
+      <path d="M218 228 Q240 216 262 228 Q240 240 218 228 Z" fill="#e9e3d8"/>
+      <ellipse cx="161" cy="228" rx="15" ry="17" fill="url(#eyevoid)"/>
+      <ellipse cx="240" cy="228" rx="15" ry="17" fill="url(#eyevoid)"/>
+      <circle cx="161" cy="230" r="3.2" fill="#ff1a1a"/><circle cx="240" cy="230" r="3.2" fill="#ff1a1a"/>
+      <circle cx="161" cy="230" r="6" fill="none" stroke="#ff0000" stroke-opacity="0.5"/>
+      <circle cx="240" cy="230" r="6" fill="none" stroke="#ff0000" stroke-opacity="0.5"/>
+      <!-- lashes -->
+      <path d="M140 226 l-9 -5 M150 218 l-4 -8 M172 219 l5 -8 M182 226 l9 -5" stroke="#1a140f" stroke-width="2" fill="none"/>
+      <path d="M218 226 l-9 -5 M228 218 l-4 -8 M250 219 l5 -8 M262 226 l9 -5" stroke="#1a140f" stroke-width="2" fill="none"/>
+    </g>
+    <!-- bloody tear (left eye) -->
+    <path d="M161 245 Q159 300 164 360 Q166 380 162 400" stroke="#7a0000" stroke-width="4" fill="none" opacity="0.9"/>
+    <circle cx="163" cy="405" r="5" fill="#8b0000"/>
+    <!-- nose -->
+    <path d="M200 245 Q193 285 188 300 Q200 308 212 300 Q207 285 200 245 Z" fill="#b6a892" opacity="0.7"/>
+    <!-- mouth: pretty but too wide, slight smile -->
+    <path d="M150 330 Q200 320 250 330 Q225 372 200 372 Q175 372 150 330 Z" fill="#7a2230"/>
+    <path d="M150 330 Q200 322 250 330 Q200 340 150 330 Z" fill="#a83a4a"/>
+    <path d="M165 352 Q200 366 235 352 Q200 374 165 352 Z" fill="#3a0a12"/>
+    <!-- teeth hint -->
+    <path d="M168 338 L200 346 L232 338 L200 344 Z" fill="#e8e0d6" opacity="0.85"/>
+    <!-- blood from mouth corner -->
+    <path d="M250 332 Q258 360 252 400 Q250 420 256 440" stroke="#6e0000" stroke-width="3.5" fill="none" opacity="0.85"/>
+    <!-- hair front strands framing -->
+    <path d="M118 150 Q92 240 104 360 Q86 280 110 170 Z" fill="url(#hair)"/>
+    <path d="M282 150 Q308 240 296 360 Q314 280 290 170 Z" fill="url(#hair)"/>
+    <path d="M120 110 Q200 70 280 110 Q220 96 200 100 Q180 96 120 110 Z" fill="url(#hair)"/>
+  </svg>
 </div>
 
 <div class="screenblood" id="screenblood"></div>
 
 <div class="curse" id="curse">
   <div class="title">YOU ARE NOW CURSED</div>
-  <div class="desc" id="curseDesc">the moment you opened this, it marked you.<br>the only way to lift it is to speak the un-curse.</div>
+  <div class="desc" id="curseDesc">the moment you opened this, she marked you.<br>the only way to lift it is to speak the un-curse.</div>
   <div class="code" id="curseCode">···· ···· ····</div>
   <div class="cd" id="curseCd">lifting in 10</div>
   <button class="undo" id="curseUndo">UNDO THE CURSE</button>
@@ -276,7 +295,6 @@
 </div>
 
 <script>
-  // ── MODE: nameless by default. Cheat mode only via ?mode=cheat&name= (your friend's choice) ──
   const params = new URLSearchParams(location.search);
   const isCheat = params.get('mode') === 'cheat';
   const NAME = (params.get('name') || '').trim().toUpperCase();
@@ -301,68 +319,109 @@
   const curseCd = document.getElementById('curseCd');
   const curseUndo = document.getElementById('curseUndo');
   const curseStamp = document.getElementById('curseStamp');
+  const curseDesc = document.getElementById('curseDesc');
   const youEl = document.querySelector('.you');
 
   let dreadLevel = 0;
 
+  // ── SPEECH (she speaks the lines) ──
+  let voice = null;
+  function loadVoice(){ if('speechSynthesis' in window){ const vs = speechSynthesis.getVoices(); voice = vs.find(v=>/en[-_]?US/i.test(v.lang)) || vs.find(v=>/en/i.test(v.lang)) || vs[0] || null; } }
+  if('speechSynthesis' in window){ loadVoice(); speechSynthesis.onvoiceschanged = loadVoice; }
+  function speak(text){
+    if(!('speechSynthesis' in window)) return;
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      if(voice) u.voice = voice;
+      u.rate = 0.62; u.pitch = 0.35; u.volume = 1.0;
+      speechSynthesis.speak(u);
+    } catch(e){}
+  }
+
   // Dead eyes
   const eyesWrap = document.getElementById('eyes'); const eyeList = [];
-  for (let i = 0; i < 8; i++) {
-    const e = document.createElement('div'); e.className = 'eye';
-    e.style.left = (6 + Math.random()*88) + 'vw'; e.style.top = (5 + Math.random()*90) + 'vh';
-    e.style.transform = 'scale(' + (0.6 + Math.random()*1.1) + ')';
-    eyesWrap.appendChild(e); eyeList.push(e);
-  }
-  function blinkEyes() { const e = eyeList[Math.floor(Math.random()*eyeList.length)]; e.classList.add('open'); setTimeout(()=>e.classList.remove('open'), 350+Math.random()*400); setTimeout(blinkEyes, 1800+Math.random()*5000); }
-  setTimeout(blinkEyes, 1200);
+  for (let i=0;i<8;i++){ const e=document.createElement('div'); e.className='eye'; e.style.left=(6+Math.random()*88)+'vw'; e.style.top=(5+Math.random()*90)+'vh'; e.style.transform='scale('+(0.6+Math.random()*1.1)+')'; eyesWrap.appendChild(e); eyeList.push(e); }
+  function blinkEyes(){ const e=eyeList[Math.floor(Math.random()*eyeList.length)]; e.classList.add('open'); setTimeout(()=>e.classList.remove('open'),350+Math.random()*400); setTimeout(blinkEyes,1800+Math.random()*5000); }
+  setTimeout(blinkEyes,1200);
 
+  // Whisper lines (TEXT, contradictory = confusion)
   const baseLines = [
     "behind you","it already knows","you left the door open","they are counting",
     "don't look up","this was always the ending","it hears the screen",
     "you can still feel it","no one is coming","the numbers were never yours",
-    "it can see you through the glass","it is still in the room","do not turn around","the walls are breathing"
+    "it can see you through the glass","it is still in the room","do not turn around","the walls are breathing",
+    "look at her","don't look at her","she is already inside"
   ];
   const cheatLines = isCheat && NAME ? [
-    NAME + ", he knows","he read every message","you did this to " + NAME,
+    NAME+", he knows","he read every message","you did this to "+NAME,
     "the pictures are still on his phone","you betrayed him","you can't undo it",
-    "she showed him everything","he saw the texts at 3am","you lied to his face",
-    NAME + ", this is your ending"
+    "she showed him everything","he saw the texts at 3am","you lied to his face", NAME+", this is your ending"
   ] : [];
   const lines = baseLines.concat(cheatLines);
 
-  function whisperLoop() {
+  // SPOKEN lines (she says these aloud)
+  const spokenLines = [
+    "you are cursed forever",
+    "you can't escape",
+    "he will always be mine",
+    "i will never let you go",
+    "look at me",
+    "we are the same now",
+    "you opened it, so you stay",
+    "there is no door",
+    "i am already in your house",
+    "say goodnight"
+  ];
+  const cheatSpoken = isCheat && NAME ? [
+    NAME+", he will always be mine",
+    NAME+", you can't take him back",
+    "he thinks of me now, not you"
+  ] : [];
+  const allSpoken = spokenLines.concat(cheatSpoken);
+
+  function whisperLoop(){
     const l = lines[Math.floor(Math.random()*lines.length)];
-    whisperEl.style.opacity = '0';
-    setTimeout(() => { whisperEl.textContent = l; whisperEl.style.opacity = '0.8'; }, 300);
-    setTimeout(() => { whisperEl.style.opacity = '0'; }, 2600);
-    setTimeout(whisperLoop, 3800 + Math.random()*3800);
+    whisperEl.style.opacity='0';
+    setTimeout(()=>{ whisperEl.textContent=l; whisperEl.style.opacity='0.8'; }, 300);
+    setTimeout(()=>{ whisperEl.style.opacity='0'; }, 2600);
+    setTimeout(whisperLoop, 3800+Math.random()*3800);
   }
   whisperLoop();
 
-  function trackingSweep() {
-    tracking.style.opacity = '0.9'; tracking.style.transition='none'; tracking.style.transform='translateY(-20%)';
-    requestAnimationFrame(() => { tracking.style.transition='transform 0.5s ease, opacity 0.5s ease'; tracking.style.transform='translateY(700%)'; tracking.style.opacity='0'; });
-    setTimeout(trackingSweep, 9000 + Math.random()*14000 + dreadLevel*4000);
+  // She speaks at random intervals (confusion: sometimes contradicts the text)
+  function speakLoop(){
+    if(audioReady || veilOpened){
+      const s = allSpoken[Math.floor(Math.random()*allSpoken.length)];
+      speak(s);
+      triggerScareSoft();
+    }
+    setTimeout(speakLoop, 11000 + Math.random()*12000);
   }
+  setTimeout(speakLoop, 9000);
+
+  function trackingSweep(){ tracking.style.opacity='0.9'; tracking.style.transition='none'; tracking.style.transform='translateY(-20%)'; requestAnimationFrame(()=>{ tracking.style.transition='transform 0.5s ease, opacity 0.5s ease'; tracking.style.transform='translateY(700%)'; tracking.style.opacity='0'; }); setTimeout(trackingSweep, 9000+Math.random()*14000+dreadLevel*4000); }
   setTimeout(trackingSweep, 6000);
 
-  function flashLoop() { flash.style.opacity = (0.04 + Math.random()*0.12 + dreadLevel*0.15).toFixed(3); setTimeout(()=>flash.style.opacity='0', 60+Math.random()*90); setTimeout(flashLoop, 2500+Math.random()*5000); }
+  function flashLoop(){ flash.style.opacity=(0.04+Math.random()*0.12+dreadLevel*0.15).toFixed(3); setTimeout(()=>flash.style.opacity='0',60+Math.random()*90); setTimeout(flashLoop,2500+Math.random()*5000); }
   flashLoop();
 
   function fmtTC(s){ const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),r=s%60,p=n=>(n<10?'0':'')+n; return p(h)+':'+p(m)+':'+p(r); }
 
-  let seconds = 0, started = false;
+  let seconds=0, started=false, veilOpened=false;
   function fmt(s){ const m=Math.floor(s/60),r=s%60; return m+':'+(r<10?'0':'')+r; }
-  function tickTimer() {
+  function tickTimer(){
     seconds++;
-    timerEl.textContent = (isCheat && NAME ? NAME + " has been here " : "you have been here ") + fmt(seconds);
+    // mental confusion: timer sometimes glitches to impossible values
+    if(Math.random() < 0.06){ timerEl.textContent = "you have been here " + (Math.random()<0.5 ? "-"+fmt(Math.floor(Math.random()*9999)) : fmt(seconds) + " ∞"); }
+    else { timerEl.textContent = (isCheat&&NAME ? NAME+" has been here " : "you have been here ") + fmt(seconds); }
     tcEl.textContent = fmtTC(seconds);
     dreadLevel = Math.min(1, seconds/110);
-    if (audioReady) intensify(dreadLevel);
+    if(audioReady) intensify(dreadLevel);
   }
   function startTimer(){ if(!started){ started=true; setInterval(tickTimer,1000); } }
 
-  /* ── AUDIO: 2000s horror score ── */
+  /* AUDIO */
   let audioCtx=null, master=null, audioReady=false;
   let droneGain, droneOscs=[], stringGain, stringFilter, breathGain, beatRate=1150, heartTimer=null;
   function ensureAudio(){ try{ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended') audioCtx.resume(); }catch(e){} }
@@ -401,75 +460,59 @@
   }
   function intensify(L){ if(!audioCtx) return; droneGain.gain.value=0.16+L*0.12; stringGain.gain.value=0.04+L*0.08; beatRate=Math.max(620,1150-L*530); if(heartTimer){ clearInterval(heartTimer); heartTimer=setInterval(()=>{ if(audioCtx) thump(beatRate%2===0?0.9:0.5); }, beatRate); } }
 
-  /* ── SUBLIMINAL (real photo face) ── */
+  /* SUBLIMINAL (her face flashes) */
   let subCooldown=false;
-  function subliminal(){ if(subCooldown) return; subCooldown=true; sublime.classList.add('on'); setTimeout(()=>sublime.classList.remove('on'), 70+Math.random()*60); setTimeout(()=>subCooldown=false, 4000+Math.random()*6000); }
+  function subliminal(){ if(subCooldown) return; subCooldown=true; sublime.innerHTML=''; const c=facebox.querySelector('svg').cloneNode(true); c.removeAttribute('class'); c.style.width='52vw'; c.style.maxWidth='300px'; c.style.filter='grayscale(0.3) contrast(1.6) brightness(0.5)'; sublime.appendChild(c); sublime.classList.add('on'); setTimeout(()=>sublime.classList.remove('on'), 70+Math.random()*60); setTimeout(()=>subCooldown=false, 4000+Math.random()*6000); }
   function subliminalLoop(){ if(Math.random()<(0.25+dreadLevel*0.4)) subliminal(); setTimeout(subliminalLoop, 6000+Math.random()*9000); }
   setTimeout(subliminalLoop, 8000);
 
-  /* ── CRAWLERS ── */
   function crawl(dir){ const el=dir==='up'?document.getElementById('crawlerUp'):document.getElementById('crawlerDown'); el.classList.add('on'); el.style.animation=(dir==='up'?'crawlUp':'crawlDown')+' 6s ease-in forwards'; sting(false); setTimeout(()=>{ el.classList.remove('on'); el.style.animation=''; },6200); }
 
-  /* ── WATCHER ── */
   setTimeout(()=>{ watcher.classList.add('show'); }, 12000);
   setInterval(()=>{ if(!watcher.classList.contains('show')) return; const s=0.35+Math.min(0.7,seconds/180); const bottom=-10+Math.min(22,seconds/10); watcher.style.transform='translateX(-50%) scale('+s.toFixed(3)+')'; watcher.style.bottom=bottom.toFixed(1)+'%'; },4000);
 
-  /* ── JUMPSCARE: real photo face + screen blood + crash ── */
+  /* JUMPSCARE: the woman appears + speaks + blood */
   let scareCooldown=0;
-  function triggerScare(){
-    if(scareCooldown>0) return; scareCooldown=5;
+  function triggerScareSoft(){
+    if(scareCooldown>0) return; scareCooldown=4;
     facebox.classList.add('on'); screenblood.classList.remove('on');
     sting(true);
-    whisperEl.textContent='IT FOUND YOU'; whisperEl.style.opacity='0.9';
-    // chromatic crash
-    document.body.style.filter='invert(1) contrast(1.6) hue-rotate(180deg)';
+    const s = allSpoken[Math.floor(Math.random()*allSpoken.length)];
+    speak(s);
+    document.body.style.filter='invert(1) contrast(1.5) hue-rotate(180deg)';
     setTimeout(()=>{ document.body.style.filter=''; screenblood.classList.add('on'); }, 180);
-    setTimeout(()=>{ facebox.classList.remove('on'); }, 650);
+    setTimeout(()=>{ facebox.classList.remove('on'); }, 700);
     setTimeout(()=>{ screenblood.classList.remove('on'); }, 2600);
   }
+  function triggerScare(){ triggerScareSoft(); }
   setInterval(()=>{ if(scareCooldown>0) scareCooldown--; },1000);
-  stage.addEventListener('pointerup', ()=>{ ensureAudio(); if(scareCooldown===0 && Math.random()<0.20) triggerScare(); });
+  stage.addEventListener('pointerup', ()=>{ ensureAudio(); if(scareCooldown===0 && Math.random()<0.18) triggerScare(); });
 
-  /* ── CURSE ── */
+  /* CURSE */
   let curseActive=false, curseUndos=0;
   const curseCodes = ["XOF-7-13-09","DOA-3-66-01","NULL-VOID-77","RIP-4-EVER","N01-EXIT-90"];
-  function startCurse(){
-    if(curseActive) return; curseActive=true; curseUndos=0;
-    curseStamp.style.display='none';
-    curseCode.textContent=curseCodes[Math.floor(Math.random()*curseCodes.length)];
-    curseCd.textContent='lifting in 10';
-    curse.classList.add('on');
-    sting(true);
-    let n=10; const iv=setInterval(()=>{ n--; if(n>0){ curseCd.textContent='lifting in '+n; } else { clearInterval(iv); showPermanent(); } },1000);
-    curse._iv=iv;
+  const curseFails = ["the code is wrong","she rejects you","you are already marked","too late","the curse only grows","she owns you now"];
+  function startCurse(){ if(curseActive) return; curseActive=true; curseUndos=0; curseStamp.style.display='none'; curseUndo.style.display='';
+    curseCode.textContent=curseCodes[Math.floor(Math.random()*curseCodes.length)]; curseCd.textContent='lifting in 10';
+    curse.classList.add('on'); sting(true); speak("you are cursed forever");
+    let n=10; const iv=setInterval(()=>{ n--; if(n>0){ curseCd.textContent='lifting in '+n; } else { clearInterval(iv); showPermanent(); } },1000); curse._iv=iv;
   }
-  function showPermanent(){
-    curseCd.textContent='';
-    curseUndo.style.display='none';
-    curseStamp.style.display='block';
-    curseDesc && (document.getElementById('curseDesc').innerHTML='there was never a way out.<br>the curse ends only when you do.');
-    sting(true);
-    // keep blood on screen
-    screenblood.classList.add('on');
-  }
-  curseUndo.addEventListener('click',(e)=>{ e.stopPropagation(); ensureAudio(); sting(true); curseUndos++;
-    // it "fails" and resets the countdown, deeper
+  function showPermanent(){ curseCd.textContent=''; curseUndo.style.display='none'; curseStamp.style.display='block';
+    curseDesc.innerHTML="there was never a way out.<br>the curse ends only when you do."; sting(true); speak("you can't escape"); screenblood.classList.add('on'); }
+  curseUndo.addEventListener('click',(e)=>{ e.stopPropagation(); ensureAudio(); sting(true); speak("you can't escape"); curseUndos++;
     curse._iv && clearInterval(curse._iv);
-    const fails=["the code is wrong","it rejects you","you are already marked","too late","the curse only grows"];
-    curseDesc && (document.getElementById('curseDesc').innerHTML=fails[Math.min(curseUndos-1,fails.length-1)]);
+    curseDesc.innerHTML=curseFails[Math.min(curseUndos-1,curseFails.length-1)];
     curseCode.textContent=curseCodes[Math.floor(Math.random()*curseCodes.length)];
-    let n=10; curseCd.textContent='lifting in 10';
-    curse._iv=setInterval(()=>{ n--; if(n>0){ curseCd.textContent='lifting in '+n; } else { clearInterval(curse._iv); showPermanent(); } },1000);
+    let n=10; curseCd.textContent='lifting in 10'; curse._iv=setInterval(()=>{ n--; if(n>0){ curseCd.textContent='lifting in '+n; } else { clearInterval(curse._iv); showPermanent(); } },1000);
     document.body.style.filter='invert(1)'; setTimeout(()=>document.body.style.filter='',120);
   });
-  // tapping the curse screen = worse
   curse.addEventListener('click',(e)=>{ if(e.target===curseUndo) return; ensureAudio(); triggerScare(); });
 
-  /* ── LET ME OUT trap ── */
+  /* LET ME OUT trap */
   let leaveClicks=0;
   const leaveTexts=["LET ME OUT","PLEASE","LET ME OUT","I'M SORRY","LET ME OUT","HELP ME","LET ME OUT"];
-  const leaveWhisper=["NO.","there is no door","you locked it yourself","no one is outside","it heard you","you're already inside","too late"];
-  leaveBtn.addEventListener('click',(e)=>{ e.stopPropagation(); ensureAudio(); leaveClicks++; sting(true);
+  const leaveWhisper=["NO.","there is no door","you locked it yourself","no one is outside","she heard you","you're already inside","too late"];
+  leaveBtn.addEventListener('click',(e)=>{ e.stopPropagation(); ensureAudio(); leaveClicks++; sting(true); speak("you can't escape");
     whisperEl.textContent=leaveWhisper[Math.min(leaveClicks-1,leaveWhisper.length-1)]||"NO."; whisperEl.style.opacity='0.95';
     dreadLevel=Math.min(1,dreadLevel+0.18); if(audioReady) intensify(dreadLevel);
     document.body.style.filter='invert(1) hue-rotate(200deg)'; setTimeout(()=>document.body.style.filter='',140);
@@ -479,25 +522,18 @@
     if(leaveClicks>=7){ leaveBtn.textContent="NO EXIT"; leaveBtn.style.pointerEvents='none'; leaveBtn.style.opacity='0.4'; }
   });
 
-  /* ── YOU CAN'T LEAVE takeover @60s ── */
+  /* YOU CAN'T LEAVE takeover @60s */
   let takeoverActive=false;
-  function showTakeover(){ if(takeoverActive) return; takeoverActive=true; sting(true); if(Math.random()<0.5) crawl(Math.random()<0.5?'up':'down'); triggerScare(); }
+  function showTakeover(){ if(takeoverActive) return; takeoverActive=true; sting(true); speak("you can't escape"); if(Math.random()<0.5) crawl(Math.random()<0.5?'up':'down'); triggerScare(); }
   setInterval(()=>{ if(seconds>=60 && !takeoverActive && !curseActive && Math.random()<0.5) showTakeover(); },8000);
 
-  /* ── SHARE ── */
-  function makeCard(){
-    const c=document.createElement('canvas'); c.width=1200; c.height=630; const x=c.getContext('2d');
-    x.fillStyle='#000'; x.fillRect(0,0,1200,630);
-    const grad=x.createRadialGradient(600,260,60,600,260,620); grad.addColorStop(0,'rgba(40,0,0,0.5)'); grad.addColorStop(1,'rgba(0,0,0,0)');
-    x.fillStyle=grad; x.fillRect(0,0,1200,630); x.textAlign='center';
+  /* SHARE */
+  function makeCard(){ const c=document.createElement('canvas'); c.width=1200; c.height=630; const x=c.getContext('2d');
+    x.fillStyle='#000'; x.fillRect(0,0,1200,630); const grad=x.createRadialGradient(600,260,60,600,260,620); grad.addColorStop(0,'rgba(40,0,0,0.5)'); grad.addColorStop(1,'rgba(0,0,0,0)'); x.fillStyle=grad; x.fillRect(0,0,1200,630); x.textAlign='center';
     x.shadowColor='#ff0000'; x.shadowBlur=34; x.fillStyle='#8b0000'; x.font='900 140px "Courier New", monospace'; x.fillText('GAME OVER',600,210);
-    x.shadowBlur=12; x.fillStyle='#cccccc'; x.font='44px "Courier New", monospace';
-    const line=isCheat&&NAME?NAME+", you did this to yourself":"you did this to yourself";
-    x.fillText(line,600,300);
+    x.shadowBlur=12; x.fillStyle='#cccccc'; x.font='44px "Courier New", monospace'; const line=isCheat&&NAME?NAME+", you did this to yourself":"you did this to yourself"; x.fillText(line,600,300);
     x.fillStyle='#ff2b2b'; x.font='30px "Courier New", monospace'; x.fillText((isCheat&&NAME?NAME+" trapped for ":"trapped for ")+fmt(seconds),600,360);
-    x.fillStyle='#555'; x.font='24px "Courier New", monospace'; x.fillText('[ there is no escape ]',600,430);
-    return c;
-  }
+    x.fillStyle='#555'; x.font='24px "Courier New", monospace'; x.fillText('[ she will always be yours ]',600,430); return c; }
   shareBtn.addEventListener('click',async(e)=>{ e.stopPropagation(); ensureAudio(); const c=makeCard();
     try{ const blob=await new Promise(res=>c.toBlob(res,'image/png')); const file=new File([blob],'game-over.png',{type:'image/png'});
       if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:'GAME OVER',text:isCheat&&NAME?NAME+", you did this to yourself":"you did this to yourself"}); }
@@ -506,16 +542,15 @@
 
   findBtn.addEventListener('click',(e)=>{ e.stopPropagation(); ensureAudio(); triggerScare(); });
 
-  /* ── VEIL ── */
-  function reveal(){ veil.style.transition='opacity 0.8s ease'; veil.style.opacity='0'; setTimeout(()=>veil.remove(),850); startScore(); startTimer(); recEl.style.display='block'; tcEl.style.display='block'; }
+  /* VEIL */
+  let revealed=false;
+  function reveal(){ if(revealed) return; revealed=true; veilOpened=true; veil.style.transition='opacity 0.8s ease'; veil.style.opacity='0'; setTimeout(()=>veil.remove(),850); startScore(); startTimer(); recEl.style.display='block'; tcEl.style.display='block'; }
   veil.addEventListener('click',reveal);
   veil.addEventListener('touchstart',ensureAudio,{passive:true});
 
   document.addEventListener('mousemove',()=>{ if(Math.random()>0.985){ document.body.style.filter='hue-rotate('+(Math.random()*40-20)+'deg) contrast(1.2)'; setTimeout(()=>document.body.style.filter='',90); } });
 
-  // trigger the curse on first real interaction (opening)
-  function firstCurse(){ if(!curseActive && seconds>3 && !takeoverActive){ startCurse(); } }
-  setTimeout(firstCurse, 5000);
+  setTimeout(()=>{ if(veilOpened && !curseActive) startCurse(); }, 6000);
 </script>
 </body>
 </html>
