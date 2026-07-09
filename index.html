@@ -9,6 +9,7 @@
 <meta name="theme-color" content="#000000">
 <title>GAME OVER</title>
 <style>
+  :root { --ease: cubic-bezier(.22,.61,.36,1); --easeIn: cubic-bezier(.55,.06,.68,.19); }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; height: 100dvh; overflow: hidden; background: #000; }
   body { font-family: "Courier New", Courier, monospace; background: #000; color: #b30000;
@@ -16,126 +17,129 @@
     user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
     touch-action: manipulation; cursor: crosshair;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
-  .vignette { position: fixed; inset: 0; pointer-events: none; z-index: 5;
-    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 22%, rgba(0,0,0,0.66) 62%, rgba(0,0,0,0.98) 100%);
-    animation: breathe 7s ease-in-out infinite; }
-  @keyframes breathe { 0%,100% { opacity: 0.85; } 50% { opacity: 1; } }
+
+  /* ── SHE, BLENDED INTO THE SCREEN ── */
+  .apparition { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .apparition img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    opacity: 0; filter: grayscale(.4) contrast(1.12) brightness(.42) blur(1.5px) saturate(.85);
+    mix-blend-mode: screen; transform-origin: 50% 46%; will-change: opacity, transform;
+    transition: opacity 2.6s var(--ease); }
+  .apparition img.show { opacity: var(--op, .34); animation: breathe 13s ease-in-out infinite; }
+  .apparition img.loom { opacity: .62 !important; animation: lean 7s ease-in-out infinite; }
+  @keyframes breathe { 0%,100% { transform: scale(1.06) translateY(0) rotate(0deg); } 50% { transform: scale(1.13) translateY(-1.5%) rotate(.4deg); } }
+  @keyframes lean { 0% { transform: scale(1.12) translate(0,0) rotate(.3deg); } 35% { transform: scale(1.2) translate(-1.5%,1%) rotate(-.8deg); } 70% { transform: scale(1.18) translate(1.5%,-1%) rotate(.9deg); } 100% { transform: scale(1.12) translate(0,0) rotate(.3deg); } }
+  .appTint { position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background:
+      radial-gradient(120% 90% at 50% 30%, rgba(120,0,40,0) 40%, rgba(40,0,20,.55) 100%),
+      linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.55));
+    mix-blend-mode: multiply; }
+  .appVeil { position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    box-shadow: inset 0 0 28vmin 12vmin rgba(0,0,0,.92); }
+
+  .veilV { position: fixed; inset: 0; z-index: 5; pointer-events: none;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 18%, rgba(0,0,0,.72) 64%, rgba(0,0,0,.99) 100%);
+    animation: breatheV 8s ease-in-out infinite; }
+  @keyframes breatheV { 0%,100% { opacity: .9; } 50% { opacity: 1; } }
+
   .scanlines { position: fixed; inset: 0; pointer-events: none; z-index: 6;
-    background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.42) 3px, rgba(0,0,0,0.42) 4px);
-    mix-blend-mode: multiply; opacity: 0.85; }
-  .grain { position: fixed; inset: -20%; z-index: 9; pointer-events: none; opacity: 0.13;
+    background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.30) 3px, rgba(0,0,0,0.30) 4px);
+    mix-blend-mode: multiply; opacity: .7; }
+  .grain { position: fixed; inset: -20%; z-index: 9; pointer-events: none; opacity: .10;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 220px 220px; animation: grain 0.4s steps(3) infinite; }
+    background-size: 220px 220px; animation: grain 0.5s steps(3) infinite; }
   @keyframes grain { 0%{transform:translate(0,0)} 33%{transform:translate(-6%,4%)} 66%{transform:translate(5%,-5%)} 100%{transform:translate(0,0)} }
   .flickerx { position: fixed; inset: 0; pointer-events: none; z-index: 7;
-    background: rgba(15,0,0,0.07); animation: flickx 5s steps(2) infinite; }
-  @keyframes flickx { 0%,19%,21%,55%,57%,100% { opacity: 0.3; } 20%,56% { opacity: 0.7; } }
+    background: rgba(15,0,0,0.05); animation: flickx 6s steps(2) infinite; }
+  @keyframes flickx { 0%,19%,21%,55%,57%,100% { opacity: .25; } 20%,56% { opacity: .55; } }
+
   .rec { position: fixed; top: calc(env(safe-area-inset-top) + 14px); left: 18px; z-index: 40; pointer-events: none;
-    color: #d0d0d0; font-size: 13px; letter-spacing: 2px; text-shadow: 0 0 6px #000; display: none; }
-  .rec .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #ff1a1a; margin-right: 6px;
-    box-shadow: 0 0 8px #ff0000; animation: recblink 1s steps(2) infinite; vertical-align: middle; }
+    color: #cfcfcf; font-size: 12px; letter-spacing: 2px; text-shadow: 0 0 6px #000; opacity: 0; transition: opacity 1s; }
+  .rec .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #ff1a1a; margin-right: 6px;
+    box-shadow: 0 0 8px #ff0000; animation: recblink 1.1s steps(2) infinite; vertical-align: middle; }
   @keyframes recblink { 0%,100%{opacity:1} 50%{opacity:0.15} }
   .tc { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 14px); right: 18px; z-index: 40; pointer-events: none;
-    color: #cfcfcf; font-size: 13px; letter-spacing: 1px; text-shadow: 0 0 6px #000; display: none; font-variant-numeric: tabular-nums; }
-  .tracking { position: fixed; left: 0; width: 100%; height: 14%; z-index: 8; pointer-events: none; opacity: 0;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.0), rgba(200,200,200,0.18), rgba(255,255,255,0.0));
+    color: #c8c8c8; font-size: 12px; letter-spacing: 1px; text-shadow: 0 0 6px #000; opacity: 0; transition: opacity 1s; font-variant-numeric: tabular-nums; }
+  .tracking { position: fixed; left: 0; width: 100%; height: 13%; z-index: 8; pointer-events: none; opacity: 0;
+    background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(200,200,200,0.16), rgba(255,255,255,0));
     mix-blend-mode: screen; }
-  .stage { position: relative; z-index: 3; text-align: center; padding: 18px; width: 100%; max-width: 640px; }
-  .gameover { font-size: clamp(42px, 14vw, 120px); font-weight: 900; letter-spacing: 3px; color: #7a0000;
-    text-shadow: 0 0 5px #ff0000, 0 0 18px rgba(255,0,0,0.5), 3px 0 0 #2a0000, -3px 0 0 #4a0000;
-    position: relative; animation: pulseText 2.4s ease-in-out infinite; filter: saturate(1.2); }
-  @keyframes pulseText { 0%,100% { opacity: 0.82; transform: scale(1.00); } 50% { opacity: 1; transform: scale(1.02); } }
+  .stage { position: relative; z-index: 3; text-align: center; padding: 18px; width: 100%; max-width: 680px; }
+  .gameover { font-size: clamp(40px, 13vw, 116px); font-weight: 900; letter-spacing: 4px; color: #860000;
+    text-shadow: 0 0 4px rgba(255,0,0,.8), 0 0 22px rgba(255,0,0,.4), 3px 0 0 #2a0000, -3px 0 0 #460000;
+    position: relative; animation: pulseText 3s ease-in-out infinite; filter: saturate(1.15); }
+  @keyframes pulseText { 0%,100% { opacity: .9; transform: scale(1); } 50% { opacity: 1; transform: scale(1.015); } }
   .gameover::before, .gameover::after { content: "GAME OVER"; position: absolute; top: 0; left: 0; width: 100%; overflow: hidden; }
-  .gameover::before { color: #00e0ff; left: 2px; text-shadow: none; animation: glitchTop 2.6s infinite linear alternate-reverse; opacity: 0.6; }
-  .gameover::after { color: #ff003c; left: -2px; text-shadow: none; animation: glitchBot 1.9s infinite linear alternate-reverse; opacity: 0.6; }
-  @keyframes glitchTop { 0% { clip-path: inset(0 0 85% 0); transform: translate(0,0); } 20% { clip-path: inset(20% 0 55% 0); transform: translate(-3px,0); } 40% { clip-path: inset(45% 0 35% 0); transform: translate(3px,0); } 60% { clip-path: inset(10% 0 75% 0); transform: translate(-2px,0); } 80% { clip-path: inset(60% 0 20% 0); transform: translate(2px,0); } 100% { clip-path: inset(5% 0 80% 0); transform: translate(0,0); } }
-  @keyframes glitchBot { 0% { clip-path: inset(70% 0 5% 0); transform: translate(0,0); } 25% { clip-path: inset(80% 0 8% 0); transform: translate(3px,0); } 50% { clip-path: inset(55% 0 30% 0); transform: translate(-3px,0); } 75% { clip-path: inset(88% 0 2% 0); transform: translate(2px,0); } 100% { clip-path: inset(65% 0 12% 0); transform: translate(0,0); } }
-  .blood { margin: 14px auto 0; width: 60%; height: 64px; position: relative; }
-  .blood::before { content: ""; position: absolute; top: 0; left: 50%; width: 3px; height: 100%;
-    background: linear-gradient(to bottom, rgba(255,0,0,0.0), #8b0000 40%, #5a0000); transform: translateX(-50%); animation: drip 3.2s ease-in infinite; }
-  .blood::after { content: ""; position: absolute; top: 0; left: 30%; width: 2px; height: 70%;
-    background: linear-gradient(to bottom, rgba(255,0,0,0.0), #7a0000); animation: drip 4.1s ease-in infinite 1.2s; }
-  @keyframes drip { 0% { height: 0; opacity: 0; } 15% { opacity: 1; } 100% { height: 100%; opacity: 0.85; } }
-  .you { margin-top: 26px; font-size: clamp(16px, 4.4vw, 28px); color: #c9c9c9; letter-spacing: 2px; text-shadow: 0 0 8px rgba(180,0,0,0.6); animation: flickerText 3.3s infinite; }
-  @keyframes flickerText { 0%,18%,22%,25%,53%,57%,100% { opacity: 0.9; } 20%,24%,55% { opacity: 0.18; } 80% { opacity: 0.55; } }
-  .you .em { color: #ff2b2b; text-shadow: 0 0 12px rgba(255,0,0,0.9); }
-  .timer { margin-top: 18px; font-size: 13px; letter-spacing: 2px; color: #7a1010; text-shadow: 0 0 6px rgba(255,0,0,0.4); animation: pulseHint 2.4s ease-in-out infinite; }
-  @keyframes pulseHint { 0%,100% { opacity: 0.3; } 50% { opacity: 0.8; } }
-  .whisper { margin-top: 16px; font-size: 13px; letter-spacing: 3px; color: #6a6a6a; min-height: 20px; text-transform: uppercase; transition: opacity 1.4s ease; }
-  .hint { margin-top: 18px; font-size: 11px; color: #444; letter-spacing: 2px; animation: pulseHint 2s ease-in-out infinite; }
-  .controls { margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-  .btn { appearance: none; border: 1px solid #5a0000; background: rgba(30,0,0,0.6); color: #c94a4a; font-family: inherit; font-size: 12px; letter-spacing: 2px; padding: 10px 14px; border-radius: 8px; cursor: pointer; text-transform: uppercase; text-shadow: 0 0 6px rgba(255,0,0,0.5); transition: all 0.18s ease; -webkit-tap-highlight-color: transparent; }
-  .btn:active { transform: scale(0.93); background: rgba(60,0,0,0.8); color: #ff5b5b; }
-  .btn.find { border-color: #7a0000; color: #ff6a6a; }
-  .btn.leave { border-color: #444; color: #9a9a9a; }
+  .gameover::before { color: #00e0ff; left: 2px; text-shadow: none; animation: glitchTop 3s infinite linear alternate-reverse; opacity: .5; }
+  .gameover::after { color: #ff003c; left: -2px; text-shadow: none; animation: glitchBot 2.2s infinite linear alternate-reverse; opacity: .5; }
+  @keyframes glitchTop { 0% { clip-path: inset(0 0 85% 0); transform: translate(0,0);} 20% { clip-path: inset(20% 0 55% 0); transform: translate(-2px,0);} 40% { clip-path: inset(45% 0 35% 0); transform: translate(2px,0);} 60% { clip-path: inset(10% 0 75% 0); transform: translate(-1px,0);} 80% { clip-path: inset(60% 0 20% 0); transform: translate(1px,0);} 100% { clip-path: inset(5% 0 80% 0); transform: translate(0,0);} }
+  @keyframes glitchBot { 0% { clip-path: inset(70% 0 5% 0); transform: translate(0,0);} 25% { clip-path: inset(80% 0 8% 0); transform: translate(2px,0);} 50% { clip-path: inset(55% 0 30% 0); transform: translate(-2px,0);} 75% { clip-path: inset(88% 0 2% 0); transform: translate(1px,0);} 100% { clip-path: inset(65% 0 12% 0); transform: translate(0,0);} }
+  .blood { margin: 14px auto 0; width: 56%; height: 60px; position: relative; }
+  .blood::before { content: ""; position: absolute; top: 0; left: 50%; width: 2px; height: 100%;
+    background: linear-gradient(to bottom, rgba(255,0,0,0), #8b0000 40%, #5a0000); transform: translateX(-50%); animation: drip 3.4s ease-in infinite; }
+  .blood::after { content: ""; position: absolute; top: 0; left: 32%; width: 1.5px; height: 66%;
+    background: linear-gradient(to bottom, rgba(255,0,0,0), #7a0000); animation: drip 4.4s ease-in infinite 1.2s; }
+  @keyframes drip { 0% { height: 0; opacity: 0; } 15% { opacity: 1; } 100% { height: 100%; opacity: .8; } }
+  .you { margin-top: 26px; font-size: clamp(16px, 4.4vw, 28px); color: #d4d4d4; letter-spacing: 2px; text-shadow: 0 0 10px rgba(160,0,0,.6); animation: flickerText 3.6s infinite; }
+  @keyframes flickerText { 0%,18%,22%,25%,53%,57%,100% { opacity: .92; } 20%,24%,55% { opacity: .22; } 80% { opacity: .58; } }
+  .you .em { color: #ff2b2b; text-shadow: 0 0 14px rgba(255,0,0,.9); }
+  .timer { margin-top: 18px; font-size: 12px; letter-spacing: 2px; color: #7a1010; text-shadow: 0 0 6px rgba(255,0,0,.4); animation: pulseHint 2.6s ease-in-out infinite; }
+  @keyframes pulseHint { 0%,100% { opacity: .28; } 50% { opacity: .75; } }
+  .whisper { margin-top: 16px; font-size: 14px; letter-spacing: 2px; color: #b9a9c9; font-style: italic; font-family: Georgia, "Times New Roman", serif;
+    min-height: 22px; opacity: 0; transition: opacity 1.6s var(--ease); text-shadow: 0 0 10px rgba(120,0,140,.6); }
+  .hint { margin-top: 18px; font-size: 11px; color: #555; letter-spacing: 2px; animation: pulseHint 2.2s ease-in-out infinite; }
+  .controls { margin-top: 22px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .btn { appearance: none; border: 1px solid rgba(122,0,0,.7); background: rgba(30,0,0,.45); color: #d96969; font-family: inherit; font-size: 12px; letter-spacing: 2px; padding: 11px 15px; border-radius: 10px; cursor: pointer; text-transform: uppercase; text-shadow: 0 0 6px rgba(255,0,0,.5); transition: all .2s var(--ease); -webkit-tap-highlight-color: transparent; backdrop-filter: blur(4px); }
+  .btn:active { transform: scale(.94); background: rgba(70,0,0,.7); color: #ff6a6a; }
+  .btn.find { border-color: rgba(150,0,40,.8); color: #ff7a9a; }
+  .btn.leave { border-color: rgba(120,120,120,.5); color: #aaa; }
   .eyes { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
-  .eye { position: absolute; width: 26px; height: 26px; border-radius: 50%; background: radial-gradient(circle at 50% 50%, #1a0000 0%, #000 60%); box-shadow: 0 0 4px #300; }
-  .eye::after { content: ""; position: absolute; top: 50%; left: 50%; width: 7px; height: 7px; background: #e8e8e8; border-radius: 50%; transform: translate(-50%,-50%); box-shadow: 0 0 8px #fff; opacity: 0; transition: opacity 0.18s ease; }
-  .eye.open::after { opacity: 0.95; }
-  .watcher { position: fixed; left: 50%; bottom: -10%; transform: translateX(-50%) scale(0.35); z-index: 1; width: 46vw; max-width: 360px; pointer-events: none; opacity: 0; transition: transform 60s linear, opacity 6s ease; filter: blur(6px) contrast(1.4) brightness(0.5); }
-  .watcher.show { opacity: 0.55; }
+  .eye { position: absolute; width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle at 50% 50%, #1a0000 0%, #000 60%); box-shadow: 0 0 4px #300; }
+  .eye::after { content: ""; position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; background: #e8e8e8; border-radius: 50%; transform: translate(-50%,-50%); box-shadow: 0 0 8px #fff; opacity: 0; transition: opacity .18s ease; }
+  .eye.open::after { opacity: .95; }
   .crawler { position: fixed; left: 0; width: 100%; z-index: 12; pointer-events: none; display: none; align-items: flex-end; justify-content: center; opacity: 0; }
   .crawler.on { display: flex; }
-  .crawler svg { width: 50vw; max-width: 320px; height: auto; filter: drop-shadow(0 0 30px #000) blur(1px); }
-  @keyframes crawlUp { 0% { transform: translateY(60vh) rotate(-4deg); opacity: 0; } 12% { opacity: 0.9; } 100% { transform: translateY(-6vh) rotate(3deg); opacity: 0.92; } }
-  @keyframes crawlDown { 0% { transform: translateY(-60vh) rotate(4deg); opacity: 0; } 12% { opacity: 0.9; } 100% { transform: translateY(60vh) rotate(-3deg); opacity: 0; } }
-  .sublime { position: fixed; inset: 0; z-index: 80; pointer-events: none; display: none; align-items: center; justify-content: center; background: #000; }
+  .crawler svg { width: 46vw; max-width: 300px; height: auto; filter: drop-shadow(0 0 30px #000) blur(1px); }
+  @keyframes crawlUp { 0% { transform: translateY(60vh) rotate(-4deg); opacity: 0; } 14% { opacity: .85; } 100% { transform: translateY(-6vh) rotate(3deg); opacity: .9; } }
+  @keyframes crawlDown { 0% { transform: translateY(-60vh) rotate(4deg); opacity: 0; } 14% { opacity: .85; } 100% { transform: translateY(60vh) rotate(-3deg); opacity: 0; } }
+  .sublime { position: fixed; inset: 0; z-index: 80; pointer-events: none; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,.6); }
   .sublime.on { display: flex; }
-  .sublime img { width: 62vw; max-width: 360px; height: auto; filter: grayscale(0.2) contrast(1.5) brightness(0.55); opacity: 0.95; }
-  .staticflash { position: fixed; inset: 0; z-index: 8; pointer-events: none; background: rgba(255,255,255,0.05); opacity: 0; }
+  .sublime img { width: 100%; height: 100%; object-fit: cover; opacity: .5; filter: grayscale(.3) contrast(1.4) brightness(.5); }
+  .staticflash { position: fixed; inset: 0; z-index: 8; pointer-events: none; background: rgba(255,255,255,.05); opacity: 0; }
 
-  /* PHOTO APPARITION — she cycles through ALL six, never locked on one */
-  .apparition { position: fixed; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center; pointer-events: none; }
-  .apparition img { position: absolute; max-width: 88vw; max-height: 82vh; width: auto; height: auto; object-fit: contain;
-    opacity: 0; filter: grayscale(0.18) contrast(1.35) brightness(0.62) saturate(0.9); transition: opacity 1.1s ease, transform 6s ease, filter 1.1s ease; }
-  .apparition img.show { opacity: 0.92; }
-  .apparition img.loom { filter: grayscale(0.1) contrast(1.7) brightness(0.78) saturate(1.05); transform: scale(1.12); }
-  .appCaption { position: fixed; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 54px); z-index: 31; text-align: center;
-    color: #c9a9c9; font-size: 13px; letter-spacing: 3px; text-shadow: 0 0 10px rgba(120,0,120,0.7); opacity: 0; transition: opacity 1s ease; pointer-events: none; }
-
-  .facebox { position: fixed; inset: 0; z-index: 90; display: none; align-items: center; justify-content: center; background: #000; pointer-events: none; overflow: hidden; }
-  .facebox.on { display: flex; animation: fbShake 0.07s infinite; }
-  @keyframes fbShake { 0%{transform:translate(0,0)} 25%{transform:translate(-18px,12px)} 50%{transform:translate(14px,-10px)} 75%{transform:translate(-12px,-14px)} 100%{transform:translate(13px,9px)} }
-  .facebox img { width: 86vw; max-width: 480px; height: auto; filter: contrast(1.5) brightness(0.55) saturate(0.9); animation: fbZoom 0.45s ease-out forwards; }
-  @keyframes fbZoom { 0% { transform: scale(0.3) rotate(-6deg); opacity: 0; } 10% { transform: scale(1.12) rotate(3deg); opacity: 1; } 100% { transform: scale(1.5) rotate(-1deg); opacity: 1; } }
-  .facebox .red { position: absolute; inset: 0; background: #ff0000; opacity: 0; mix-blend-mode: screen; animation: redFlash 0.55s ease-out forwards; }
-  @keyframes redFlash { 0%{opacity:0.95} 100%{opacity:0} }
-  .facebox .bar { position: absolute; left: 0; width: 100%; height: 3px; background: #fff; opacity: 0.7; animation: barJump 0.12s infinite; }
-  @keyframes barJump { 0%{top:8%} 50%{top:58%} 100%{top:86%} }
-
-  .screenblood { position: fixed; inset: 0; z-index: 92; pointer-events: none; opacity: 0; transition: opacity 0.4s ease;
-    background: radial-gradient(circle at 20% 30%, rgba(120,0,0,0.9), transparent 12%), radial-gradient(circle at 78% 22%, rgba(140,0,0,0.85), transparent 9%), radial-gradient(circle at 50% 80%, rgba(100,0,0,0.8), transparent 16%), radial-gradient(circle at 35% 65%, rgba(150,0,0,0.7), transparent 7%); filter: blur(1px); }
+  .screenblood { position: fixed; inset: 0; z-index: 44; pointer-events: none; opacity: 0; transition: opacity .6s var(--ease);
+    background: radial-gradient(circle at 20% 30%, rgba(120,0,0,.9), transparent 12%), radial-gradient(circle at 78% 22%, rgba(140,0,0,.85), transparent 9%), radial-gradient(circle at 50% 80%, rgba(100,0,0,.8), transparent 16%), radial-gradient(circle at 35% 65%, rgba(150,0,0,.7), transparent 7%); filter: blur(1px); }
   .screenblood.on { opacity: 1; }
 
-  .curse { position: fixed; inset: 0; z-index: 96; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 18px; background: #000; padding: 30px; text-align: center; }
-  .curse.on { display: flex; animation: curseIn 0.4s steps(3) forwards; }
-  @keyframes curseIn { 0%{opacity:0; background:#fff} 100%{opacity:1; background:#000} }
-  .curse .title { font-size: clamp(30px, 9vw, 76px); font-weight: 900; letter-spacing: 6px; color: #8b0000; text-shadow: 0 0 18px #ff0000, 4px 0 0 #2a0000, -4px 0 0 #4a0000; animation: tkFlick 0.2s steps(2) infinite; }
-  @keyframes tkFlick { 0%,100%{opacity:1} 50%{opacity:0.4} }
-  .curse .desc { font-size: 14px; letter-spacing: 2px; color: #bdbdbd; line-height: 1.7; max-width: 520px; }
-  .curse .code { font-size: 22px; letter-spacing: 4px; color: #ff3b3b; text-shadow: 0 0 10px #ff0000; font-variant-numeric: tabular-nums; }
-  .curse .cd { font-size: 13px; color: #777; letter-spacing: 2px; }
-  .curse .undo { appearance: none; border: 1px solid #7a0000; background: rgba(40,0,0,0.6); color: #ff7a7a; font-family: inherit; font-size: 13px; letter-spacing: 3px; padding: 13px 20px; border-radius: 9px; text-transform: uppercase; cursor: pointer; }
-  .curse .undo:active { transform: scale(0.94); }
-  .curse .stamp { font-size: clamp(26px, 8vw, 64px); font-weight: 900; letter-spacing: 4px; color: #5a0000; text-shadow: 0 0 14px rgba(255,0,0,0.5); transform: rotate(-4deg); animation: stampIn 0.18s steps(2) forwards; display: none; }
-  @keyframes stampIn { 0%{opacity:0; transform:rotate(-4deg) scale(2.4)} 100%{opacity:1; transform:rotate(-4deg) scale(1)} }
+  /* ── CURSE: non-blocking glass card, returns to main screen ── */
+  .curse { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 30px; pointer-events: none; opacity: 0; transition: opacity 1.4s var(--ease); }
+  .curse.on { opacity: 1; pointer-events: auto; }
+  .curseCard { width: 100%; max-width: 440px; text-align: center; padding: 30px 26px; border-radius: 18px;
+    background: rgba(10,0,4,.55); border: 1px solid rgba(140,0,0,.4);
+    box-shadow: 0 0 60px rgba(120,0,0,.25), inset 0 0 40px rgba(60,0,0,.2);
+    backdrop-filter: blur(10px) saturate(.9); -webkit-backdrop-filter: blur(10px) saturate(.9);
+    transform: translateY(14px) scale(.98); transition: transform 1.2s var(--ease); }
+  .curse.on .curseCard { transform: translateY(0) scale(1); }
+  .curse .title { font-size: clamp(26px, 7.5vw, 58px); font-weight: 900; letter-spacing: 5px; color: #9a0000; text-shadow: 0 0 22px rgba(255,0,0,.6), 3px 0 0 #2a0000, -3px 0 0 #460000; animation: tkFlick .25s steps(2) infinite; }
+  @keyframes tkFlick { 0%,100%{opacity:1} 50%{opacity:.45} }
+  .curse .desc { margin-top: 14px; font-size: 14px; letter-spacing: 1px; color: #d2d2d2; line-height: 1.7; }
+  .curse .code { margin-top: 16px; font-size: 20px; letter-spacing: 4px; color: #ff4b4b; text-shadow: 0 0 12px #ff0000; font-variant-numeric: tabular-nums; }
+  .curse .cd { margin-top: 8px; font-size: 12px; color: #888; letter-spacing: 2px; }
+  .curse .undo { margin-top: 18px; appearance: none; border: 1px solid rgba(150,0,0,.7); background: rgba(40,0,0,.6); color: #ff8a8a; font-family: inherit; font-size: 13px; letter-spacing: 3px; padding: 13px 20px; border-radius: 11px; text-transform: uppercase; cursor: pointer; transition: all .2s var(--ease); }
+  .curse .undo:active { transform: scale(.95); }
+  .curse .stamp { margin-top: 10px; font-size: clamp(24px, 7vw, 54px); font-weight: 900; letter-spacing: 4px; color: #6e0000; text-shadow: 0 0 16px rgba(255,0,0,.5); transform: rotate(-4deg); display: none; }
+  .curse .dismiss { margin-top: 14px; font-size: 11px; color: #777; letter-spacing: 2px; }
+  .cursedTag { position: fixed; top: calc(env(safe-area-inset-top) + 14px); right: 16px; z-index: 40; pointer-events: none;
+    color: #b36; font-size: 11px; letter-spacing: 2px; opacity: 0; transition: opacity 2s var(--ease); text-shadow: 0 0 8px rgba(180,0,100,.7); font-style: italic; }
 
-  .veil { position: fixed; inset: 0; z-index: 50; background: #000; color: #5a0000; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 18px; text-align: center; cursor: pointer; padding: 24px; }
-  .veil .big { font-size: clamp(20px, 6vw, 34px); letter-spacing: 4px; color: #7a0000; text-shadow: 0 0 10px rgba(255,0,0,0.4); animation: pulseText 2s ease-in-out infinite; }
+  .veil { position: fixed; inset: 0; z-index: 50; background: #000; color: #5a0000; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 18px; text-align: center; cursor: pointer; padding: 24px; transition: opacity .9s var(--ease); }
+  .veil .big { font-size: clamp(20px, 6vw, 34px); letter-spacing: 4px; color: #7a0000; text-shadow: 0 0 10px rgba(255,0,0,.4); animation: pulseText 2.2s ease-in-out infinite; }
   .veil .small { font-size: 12px; color: #555; letter-spacing: 2px; }
 </style>
 </head>
 <body>
+<div class="apparition" id="apparition"></div>
+<div class="appTint"></div>
+<div class="appVeil"></div>
 <div class="eyes" id="eyes"></div>
-<div class="watcher" id="watcher">
-  <svg viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
-    <defs><radialGradient id="wg" cx="50%" cy="20%" r="80%"><stop offset="0%" stop-color="#2a0000"/><stop offset="60%" stop-color="#0c0000"/><stop offset="100%" stop-color="#000"/></radialGradient></defs>
-    <ellipse cx="100" cy="150" rx="70" ry="120" fill="url(#wg)"/>
-    <g fill="#000"><ellipse cx="74" cy="120" rx="16" ry="26"/><ellipse cx="126" cy="120" rx="16" ry="26"/></g>
-    <circle cx="74" cy="124" r="4" fill="#b30000"/><circle cx="126" cy="124" r="4" fill="#b30000"/>
-    <path d="M60 230 Q100 270 140 230 Q100 250 60 230 Z" fill="#1a0000"/>
-  </svg>
-</div>
 <div class="crawler" id="crawlerUp" style="bottom:0;">
   <svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
     <path d="M100 10 Q40 60 60 120 Q20 160 70 200 L130 200 Q180 160 140 120 Q160 60 100 10 Z" fill="#0a0a0a"/>
@@ -161,7 +165,7 @@
   <div class="you">you did this to <span class="em">yourself</span></div>
   <div class="timer" id="timer">you have been here 0:00</div>
   <div class="whisper" id="whisper"></div>
-  <div class="hint">[ tap anywhere — she is listening ]</div>
+  <div class="hint">[ she is already in the room ]</div>
   <div class="controls">
     <button class="btn find" id="findBtn">look at her</button>
     <button class="btn leave" id="leaveBtn">LET ME OUT</button>
@@ -169,25 +173,13 @@
   </div>
 </div>
 
-<!-- APPARITION: cycles through ALL six photos -->
-<div class="apparition" id="apparition"></div>
-<div class="appCaption" id="appCaption"></div>
-
+<div class="cursedTag" id="cursedTag">she is with you now</div>
 <div class="sublime" id="sublime"></div>
-<div class="facebox" id="facebox"></div>
 <div class="screenblood" id="screenblood"></div>
-<div class="curse" id="curse">
-  <div class="title">YOU ARE NOW CURSED</div>
-  <div class="desc" id="curseDesc">the moment you opened this, she marked you.<br>the only way to lift it is to speak the un-curse.</div>
-  <div class="code" id="curseCode">···· ···· ····</div>
-  <div class="cd" id="curseCd">lifting in 10</div>
-  <button class="undo" id="curseUndo">UNDO THE CURSE</button>
-  <div class="stamp" id="curseStamp">THE CURSE IS PERMANENT</div>
-</div>
 <div class="staticflash" id="staticflash"></div>
 <div class="grain"></div><div class="scanlines"></div><div class="flickerx"></div>
 <div class="tracking" id="tracking"></div>
-<div class="vignette"></div>
+<div class="veilV"></div>
 <div class="rec" id="rec"><span class="dot"></span>REC</div>
 <div class="tc" id="tc">00:00:00</div>
 <div class="veil" id="veil">
@@ -218,60 +210,53 @@ const PICS = [
   const shareBtn = document.getElementById('shareBtn');
   const leaveBtn = document.getElementById('leaveBtn');
   const sublime = document.getElementById('sublime');
-  const watcher = document.getElementById('watcher');
   const tracking = document.getElementById('tracking');
   const recEl = document.getElementById('rec');
   const tcEl = document.getElementById('tc');
-  const facebox = document.getElementById('facebox');
   const screenblood = document.getElementById('screenblood');
   const curse = document.getElementById('curse');
-  const curseCode = document.getElementById('curseCode');
-  const curseCd = document.getElementById('curseCd');
-  const curseUndo = document.getElementById('curseUndo');
-  const curseStamp = document.getElementById('curseStamp');
-  const curseDesc = document.getElementById('curseDesc');
+  const curseCard = curse.querySelector('.curseCard');
+  const curseCode = document.querySelector('.curse .code');
+  const curseCd = document.querySelector('.curse .cd');
+  const curseUndo = document.querySelector('.curse .undo');
+  const curseStamp = document.querySelector('.curse .stamp');
+  const curseDesc = document.querySelector('.curse .desc');
+  const cursedTag = document.getElementById('cursedTag');
+  const apparitionEl = document.getElementById('apparition');
 
-  let dreadLevel = 0;
+  let dreadLevel = 0, appPermanent = false, appBaseOp = 0.30;
 
   // SPEECH
   let voice = null;
   function loadVoice(){ if('speechSynthesis' in window){ const vs = speechSynthesis.getVoices(); voice = vs.find(v=>/en[-_]?US/i.test(v.lang)) || vs.find(v=>/en/i.test(v.lang)) || vs[0] || null; } }
   if('speechSynthesis' in window){ loadVoice(); speechSynthesis.onvoiceschanged = loadVoice; }
-  function speak(text){
-    if(!('speechSynthesis' in window)) return;
-    try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); if(voice) u.voice = voice;
-      u.rate = 0.6; u.pitch = 0.34; u.volume = 1.0; speechSynthesis.speak(u); } catch(e){}
-  }
+  function speak(text){ if(!('speechSynthesis' in window)) return; try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); if(voice) u.voice = voice; u.rate = 0.6; u.pitch = 0.34; u.volume = 1.0; speechSynthesis.speak(u); } catch(e){} }
 
-  // Dead eyes
+  // dead eyes
   const eyesWrap = document.getElementById('eyes'); const eyeList = [];
   for (let i=0;i<8;i++){ const e=document.createElement('div'); e.className='eye'; e.style.left=(6+Math.random()*88)+'vw'; e.style.top=(5+Math.random()*90)+'vh'; e.style.transform='scale('+(0.6+Math.random()*1.1)+')'; eyesWrap.appendChild(e); eyeList.push(e); }
   function blinkEyes(){ const e=eyeList[Math.floor(Math.random()*eyeList.length)]; e.classList.add('open'); setTimeout(()=>e.classList.remove('open'),350+Math.random()*400); setTimeout(blinkEyes,1800+Math.random()*5000); }
   setTimeout(blinkEyes,1200);
 
-  const baseLines = ["behind you","it already knows","you left the door open","they are counting","don't look up","this was always the ending","it hears the screen","you can still feel it","no one is coming","the numbers were never yours","it can see you through the glass","it is still in the room","do not turn around","the walls are breathing","look at her","don't look at her","she is already inside","she never left","you belong to her now"];
+  const baseLines = ["behind you","it already knows","you left the door open","they are counting","don't look up","this was always the ending","it hears the screen","you can still feel it","no one is coming","the numbers were never yours","it can see you through the glass","it is still in the room","do not turn around","the walls are breathing","she is already inside","she never left","you belong to her now"];
   const cheatLines = isCheat && NAME ? [NAME+", he knows","he read every message","you did this to "+NAME,"the pictures are still on his phone","you betrayed him","you can't undo it","she showed him everything","he saw the texts at 3am","you lied to his face",NAME+", this is your ending"] : [];
   const lines = baseLines.concat(cheatLines);
-
   const spokenLines = ["you are cursed forever","you can't escape","he will always be mine","i will never let you go","look at me","we are the same now","you opened it, so you stay","there is no door","i am already in your house","say goodnight","you are mine now","don't look away from me"];
   const cheatSpoken = isCheat && NAME ? [NAME+", he will always be mine",NAME+", you can't take him back","he thinks of me now, not you"] : [];
   const allSpoken = spokenLines.concat(cheatSpoken);
-
-  // Obsession whispers (the "mine/mine" layer)
   const obsessed = ["you're mine","mine","all mine","you're mine now","forever mine","i keep you","mine mine mine","you can't leave me","you belong to me","my love, my trap"];
 
   function whisperLoop(){
     const l = lines[Math.floor(Math.random()*lines.length)];
-    whisperEl.style.opacity='0'; setTimeout(()=>{ whisperEl.textContent=l; whisperEl.style.opacity='0.8'; }, 300);
-    setTimeout(()=>{ whisperEl.style.opacity='0'; }, 2600);
-    setTimeout(whisperLoop, 3800+Math.random()*3800);
+    whisperEl.style.opacity='0'; setTimeout(()=>{ whisperEl.textContent=l; whisperEl.style.opacity='.85'; }, 600);
+    setTimeout(()=>{ whisperEl.style.opacity='0'; }, 3200);
+    setTimeout(whisperLoop, 4200+Math.random()*4200);
   }
   whisperLoop();
 
-  function trackingSweep(){ tracking.style.opacity='0.9'; tracking.style.transition='none'; tracking.style.transform='translateY(-20%)'; requestAnimationFrame(()=>{ tracking.style.transition='transform 0.5s ease, opacity 0.5s ease'; tracking.style.transform='translateY(700%)'; tracking.style.opacity='0'; }); setTimeout(trackingSweep, 9000+Math.random()*14000+dreadLevel*4000); }
+  function trackingSweep(){ tracking.style.opacity='.9'; tracking.style.transition='none'; tracking.style.transform='translateY(-20%)'; requestAnimationFrame(()=>{ tracking.style.transition='transform .5s ease, opacity .5s ease'; tracking.style.transform='translateY(700%)'; tracking.style.opacity='0'; }); setTimeout(trackingSweep, 9000+Math.random()*14000+dreadLevel*4000); }
   setTimeout(trackingSweep, 6000);
-
-  function flashLoop(){ flash.style.opacity=(0.04+Math.random()*0.12+dreadLevel*0.15).toFixed(3); setTimeout(()=>flash.style.opacity='0',60+Math.random()*90); setTimeout(flashLoop,2500+Math.random()*5000); }
+  function flashLoop(){ flash.style.opacity=(0.04+Math.random()*0.10+dreadLevel*0.12).toFixed(3); setTimeout(()=>flash.style.opacity='0',60+Math.random()*90); setTimeout(flashLoop,2500+Math.random()*5000); }
   flashLoop();
 
   function fmtTC(s){ const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),r=s%60,p=n=>(n<10?'0':'')+n; return p(h)+':'+p(m)+':'+p(r); }
@@ -288,32 +273,29 @@ const PICS = [
   function startTimer(){ if(!started){ started=true; setInterval(tickTimer,1000); } }
 
   // AUDIO
-  let audioCtx=null, master=null, audioReady=false;
-  let droneGain, droneOscs=[], stringGain, stringFilter, breathGain, beatRate=1150, heartTimer=null, bellBus=null;
+  let audioCtx=null, master=null, audioReady=false, droneGain, stringGain, stringFilter, breathGain, beatRate=1150, heartTimer=null, bellBus=null;
   function ensureAudio(){ try{ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended') audioCtx.resume(); }catch(e){} }
   function makeLFO(freq,depth,target,base){ const o=audioCtx.createOscillator(); o.type='sine'; o.frequency.value=freq; const g=audioCtx.createGain(); g.gain.value=depth; o.connect(g); g.connect(target); if(base!==undefined) target.value=base; o.start(); return o; }
   function startScore(){
     ensureAudio(); if(audioReady||!audioCtx) return; audioReady=true;
     master=audioCtx.createGain(); master.gain.value=0.0001; master.connect(audioCtx.destination);
-    master.gain.linearRampToValueAtTime(0.6, audioCtx.currentTime+5);
-    droneGain=audioCtx.createGain(); droneGain.gain.value=0.16;
-    const dlp=audioCtx.createBiquadFilter(); dlp.type='lowpass'; dlp.frequency.value=220; droneGain.connect(dlp); dlp.connect(master);
-    [38,38.5,57.2].forEach((f,i)=>{ const o=audioCtx.createOscillator(); o.type=i===2?'triangle':'sine'; o.frequency.value=f; o.detune.value=(Math.random()*8-4); o.connect(droneGain); o.start(); droneOscs.push(o); });
-    makeLFO(0.07,0.05,droneGain.gain,0.16);
+    master.gain.linearRampToValueAtTime(0.55, audioCtx.currentTime+5);
+    droneGain=audioCtx.createGain(); droneGain.gain.value=0.14;
+    const dlp=audioCtx.createBiquadFilter(); dlp.type='lowpass'; dlp.frequency.value=210; droneGain.connect(dlp); dlp.connect(master);
+    [38,38.5,57.2].forEach((f,i)=>{ const o=audioCtx.createOscillator(); o.type=i===2?'triangle':'sine'; o.frequency.value=f; o.detune.value=(Math.random()*8-4); o.connect(droneGain); o.start(); });
+    makeLFO(0.07,0.05,droneGain.gain,0.14);
     stringGain=audioCtx.createGain(); stringGain.gain.value=0.02;
-    stringFilter=audioCtx.createBiquadFilter(); stringFilter.type='lowpass'; stringFilter.frequency.value=500; stringFilter.Q.value=4;
+    stringFilter=audioCtx.createBiquadFilter(); stringFilter.type='lowpass'; stringFilter.frequency.value=480; stringFilter.Q.value=4;
     stringGain.connect(stringFilter); stringFilter.connect(master);
     const root=110; [0,1,6,7].forEach(semi=>{ const o=audioCtx.createOscillator(); o.type='sawtooth'; o.frequency.value=root*Math.pow(2,semi/12); o.detune.value=(Math.random()*16-8); o.connect(stringGain); o.start(); });
-    makeLFO(0.05,0.05,stringGain.gain,0.04); makeLFO(0.03,350,stringFilter.frequency,600);
+    makeLFO(0.05,0.05,stringGain.gain,0.04); makeLFO(0.03,320,stringFilter.frequency,560);
     const buf=audioCtx.createBuffer(1,audioCtx.sampleRate*2,audioCtx.sampleRate); const d=buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
     const noise=audioCtx.createBufferSource(); noise.buffer=buf; noise.loop=true;
-    const bp=audioCtx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=900; bp.Q.value=2;
+    const bp=audioCtx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=860; bp.Q.value=2;
     breathGain=audioCtx.createGain(); breathGain.gain.value=0.0; noise.connect(bp); bp.connect(breathGain); breathGain.connect(master); noise.start();
     function breathe(){ if(!audioCtx) return; const t=audioCtx.currentTime; const peak=0.05+dreadLevel*0.06+(Math.random()<0.2?0.1:0); breathGain.gain.cancelScheduledValues(t); breathGain.gain.setValueAtTime(0.0001,t); breathGain.gain.linearRampToValueAtTime(peak,t+0.6); breathGain.gain.exponentialRampToValueAtTime(0.0001,t+1.4+Math.random()); setTimeout(breathe,2600+Math.random()*3500); }
     setTimeout(breathe,1500);
     heartTimer=setInterval(()=>{ if(audioCtx) thump(beatRate%2===0?0.9:0.5); }, beatRate);
-    const ring=audioCtx.createOscillator(); ring.type='sine'; ring.frequency.value=3200; const rg=audioCtx.createGain(); rg.gain.value=0.0; ring.connect(rg); rg.connect(master); ring.start();
-    setInterval(()=>{ if(audioCtx&&audioReady) rg.gain.value=dreadLevel*0.012; },500);
     bellBus=audioCtx.createGain(); bellBus.gain.value=0.5; bellBus.connect(master);
     startLullaby();
   }
@@ -324,97 +306,63 @@ const PICS = [
     const noise=audioCtx.createBufferSource(); noise.buffer=buf; const hp=audioCtx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=700; noise.connect(hp); hp.connect(ng);
     ng.gain.setValueAtTime(strong?1.0:0.7,t); ng.gain.exponentialRampToValueAtTime(0.001,t+dur); noise.start(t); noise.stop(t+dur);
     [800,1200,1600].forEach(f=>{ const o=audioCtx.createOscillator(); o.type='sawtooth'; o.frequency.value=f*(1+(Math.random()*0.04-0.02)); const og=audioCtx.createGain(); og.gain.setValueAtTime(strong?0.18:0.1,t); og.gain.exponentialRampToValueAtTime(0.001,t+dur*0.8); o.connect(og); og.connect(master); o.start(t); o.stop(t+dur); });
-    const b=audioCtx.createOscillator(); b.type='sine'; b.frequency.setValueAtTime(strong?90:70,t); b.frequency.exponentialRampToValueAtTime(28,t+dur); const bg=audioCtx.createGain(); bg.gain.setValueAtTime(strong?0.6:0.35,t); bg.gain.exponentialRampToValueAtTime(0.001,t+dur); b.connect(bg); bg.connect(master); b.start(t); b.stop(t+dur);
-  }
-  function intensify(L){ if(!audioCtx) return; droneGain.gain.value=0.16+L*0.12; stringGain.gain.value=0.04+L*0.08; beatRate=Math.max(620,1150-L*530); if(heartTimer){ clearInterval(heartTimer); heartTimer=setInterval(()=>{ if(audioCtx) thump(beatRate%2===0?0.9:0.5); }, beatRate); } }
+    const b=audioCtx.createOscillator(); b.type='sine'; b.frequency.setValueAtTime(strong?90:70,t); b.frequency.exponentialRampToValueAtTime(28,t+dur); const bg=audioCtx.createGain(); bg.gain.setValueAtTime(strong?0.6:0.35,t); bg.gain.exponentialRampToValueAtTime(0.001,t+dur); b.connect(bg); bg.connect(master); b.start(t); b.stop(t+dur); }
+  function intensify(L){ if(!audioCtx) return; droneGain.gain.value=0.14+L*0.12; stringGain.gain.value=0.04+L*0.08; beatRate=Math.max(620,1150-L*530); if(heartTimer){ clearInterval(heartTimer); heartTimer=setInterval(()=>{ if(audioCtx) thump(beatRate%2===0?0.9:0.5); }, beatRate); } }
+  let lullStep=0; const lullaby=[523.25,659.25,783.99,659.25,587.33,523.25,440.0,523.25,493.88,587.33,698.46,587.33,523.25,440.0,392.0,440.0];
+  function bell(freq,t,vol,dur){ if(!audioCtx||!bellBus) return; const o=audioCtx.createOscillator(); o.type='sine'; o.frequency.value=freq; o.detune.value=(Math.random()*10-5); const o2=audioCtx.createOscillator(); o2.type='sine'; o2.frequency.value=freq*2.01; o2.detune.value=4; const g=audioCtx.createGain(); g.gain.value=0; o.connect(g); o2.connect(g); g.connect(bellBus); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+dur); o.start(t); o2.start(t); o.stop(t+dur); o2.stop(t+dur); }
+  function startLullaby(){ if(!audioCtx||lullTimer) return; lullTimer=setInterval(()=>{ if(!audioCtx) return; const f=lullaby[lullStep%lullaby.length]; const t=audioCtx.currentTime; bell(f,t,0.15+dreadLevel*0.05,1.6); if(Math.random()<(0.12+dreadLevel*0.3)) bell(f*1.06+(Math.random()*8-4),t+0.05,0.06,1.4); if(lullStep%4===0) bell(f/2,t,0.05,2.2); lullStep++; }, 640); }
+  let lullTimer=null;
 
-  // SWEET-BUT-CREEPY MUSIC BOX lullaby (gentle melody, detuned, slightly wrong)
-  let lullBabyTimer=null, lullBabyStep=0;
-  const lullaby = [523.25,659.25,783.99,659.25,587.33,523.25,440.0,523.25,493.88,587.33,698.46,587.33,523.25,440.0,392.0,440.0];
-  function bell(freq, t, vol, dur){
-    if(!audioCtx||!bellBus) return;
-    const o=audioCtx.createOscillator(); o.type='sine'; o.frequency.value=freq; o.detune.value=(Math.random()*10-5);
-    const o2=audioCtx.createOscillator(); o2.type='sine'; o2.frequency.value=freq*2.01; o2.detune.value=4;
-    const g=audioCtx.createGain(); g.gain.value=0; o.connect(g); o2.connect(g); g.connect(bellBus);
-    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-    o.start(t); o2.start(t); o.stop(t+dur); o2.stop(t+dur);
-  }
-  function startLullaby(){
-    if(!audioCtx||lullBabyTimer) return;
-    const period = 620; // ms per note — slow, lullaby-like
-    lullBabyTimer = setInterval(()=>{
-      if(!audioCtx) return;
-      const f = lullaby[lullBabyStep % lullaby.length];
-      const t = audioCtx.currentTime;
-      // soft music-box ping
-      bell(f, t, 0.16 + dreadLevel*0.05, 1.6);
-      // occasional "wrong" dissonant harmony as dread grows
-      if(Math.random() < (0.12 + dreadLevel*0.3)) bell(f*1.06 + (Math.random()*8-4), t+0.05, 0.06, 1.4);
-      // tiny childish echo on the downbeat
-      if(lullBabyStep % 4 === 0) bell(f/2, t, 0.05, 2.2);
-      lullBabyStep++;
-    }, period);
-  }
-
-  // APPARITION: cycle through ALL six photos, never stuck on one
-  const apparition = document.getElementById('apparition');
-  const appCaption = document.getElementById('appCaption');
-  const appImgs = PICS.map(src => { const im=document.createElement('img'); im.src=src; im.alt=''; apparition.appendChild(im); return im; });
-  let appIdx = -1, appVisible = false;
-  const capLines = ["you're mine","all mine","forever mine","don't look away","my love","you belong to me","mine mine mine"];
+  // APPARITION — blended full-screen background, cycles, breathes, looms
+  const appImgs = PICS.map(src => { const im=document.createElement('img'); im.src=src; im.alt=''; im.style.setProperty('--op', appBaseOp); apparitionEl.appendChild(im); return im; });
+  let appIdx=-1;
   function cycleApparition(){
-    // hide current
     if(appIdx>=0) appImgs[appIdx].classList.remove('show','loom');
-    const next = Math.floor(Math.random()*appImgs.length);
-    appIdx = next;
-    const im = appImgs[appIdx];
-    // alternate: visible-loom, visible-calm, or hidden (so she comes and goes)
+    const next = Math.floor(Math.random()*appImgs.length); appIdx=next; const im=appImgs[appIdx];
+    const op = appPermanent ? (0.42 + dreadLevel*0.2) : appBaseOp;
+    im.style.setProperty('--op', op.toFixed(2));
     const mode = Math.random();
-    if(mode < 0.42){ im.classList.add('show'); im.classList.remove('loom'); appVisible=true; appCaption.textContent = capLines[Math.floor(Math.random()*capLines.length)]; appCaption.style.opacity='0.7'; }
-    else if(mode < 0.7){ im.classList.add('show','loom'); appVisible=true; appCaption.textContent = capLines[Math.floor(Math.random()*capLines.length)]; appCaption.style.opacity='0.85'; }
-    else { appVisible=false; appCaption.style.opacity='0'; }
-    // obsessive whisper when she shows
-    if(appVisible){ ensureAudio(); if(audioReady) speak(obsessed[Math.floor(Math.random()*obsessed.length)]); }
-    setTimeout(cycleApparition, 2600 + Math.random()*3400);
+    if(appPermanent || mode < 0.7){ im.classList.add('show'); if(!appPermanent && Math.random()<0.4) im.classList.add('loom'); if(!appPermanent && Math.random()<0.4) speak(obsessed[Math.floor(Math.random()*obsessed.length)]); }
+    else { /* she hides, then returns */ }
+    setTimeout(cycleApparition, (appPermanent?7000:3200)+Math.random()*2600);
   }
-  setTimeout(cycleApparition, 4000);
+  setTimeout(cycleApparition, 3500);
 
-  function subliminal(){ const p = PICS[Math.floor(Math.random()*PICS.length)]; sublime.innerHTML=''; const im=document.createElement('img'); im.src=p; sublime.appendChild(im); sublime.classList.add('on'); setTimeout(()=>sublime.classList.remove('on'), 70+Math.random()*60); }
+  function subliminal(){ const p=PICS[Math.floor(Math.random()*PICS.length)]; sublime.innerHTML=''; const im=document.createElement('img'); im.src=p; sublime.appendChild(im); sublime.classList.add('on'); setTimeout(()=>sublime.classList.remove('on'), 80+Math.random()*60); }
   function subliminalLoop(){ subliminal(); setTimeout(subliminalLoop, 6000+Math.random()*9000); }
   setTimeout(subliminalLoop, 8000);
 
   function crawl(dir){ const el=dir==='up'?document.getElementById('crawlerUp'):document.getElementById('crawlerDown'); el.classList.add('on'); el.style.animation=(dir==='up'?'crawlUp':'crawlDown')+' 6s ease-in forwards'; sting(false); setTimeout(()=>{ el.classList.remove('on'); el.style.animation=''; },6200); }
-  setTimeout(()=>{ watcher.classList.add('show'); }, 12000);
-  setInterval(()=>{ if(!watcher.classList.contains('show')) return; const s=0.35+Math.min(0.7,seconds/180); const bottom=-10+Math.min(22,seconds/10); watcher.style.transform='translateX(-50%) scale('+s.toFixed(3)+')'; watcher.style.bottom=bottom.toFixed(1)+'%'; },4000);
+  setInterval(()=>{ if(Math.random()<0.10+dreadLevel*0.25) crawl(Math.random()<0.5?'up':'down'); }, 22000);
 
-  // JUMPSCARE with random photo
+  // JUMPSCARE: blended full-screen photo flash
   let scareCooldown=0;
   function triggerScare(){ if(scareCooldown>0) return; scareCooldown=4;
-    const p = PICS[Math.floor(Math.random()*PICS.length)];
-    facebox.innerHTML='<div class="red"></div><div class="bar"></div>';
-    const im=document.createElement('img'); im.src=p; facebox.appendChild(im);
-    facebox.classList.add('on'); screenblood.classList.remove('on');
-    sting(true);
-    speak(allSpoken[Math.floor(Math.random()*allSpoken.length)]);
-    document.body.style.filter='invert(1) contrast(1.5) hue-rotate(180deg)';
-    setTimeout(()=>{ document.body.style.filter=''; screenblood.classList.add('on'); }, 180);
-    setTimeout(()=>{ facebox.classList.remove('on'); }, 700);
-    setTimeout(()=>{ screenblood.classList.remove('on'); }, 2600);
+    const p=PICS[Math.floor(Math.random()*PICS.length)];
+    sublime.innerHTML=''; const im=document.createElement('img'); im.src=p; sublime.appendChild(im); sublime.classList.add('on');
+    sting(true); speak(allSpoken[Math.floor(Math.random()*allSpoken.length)]);
+    document.body.style.filter='invert(1) contrast(1.4) hue-rotate(180deg)';
+    screenblood.classList.remove('on');
+    setTimeout(()=>{ document.body.style.filter=''; screenblood.classList.add('on'); sublime.classList.remove('on'); }, 200);
+    setTimeout(()=>{ screenblood.classList.remove('on'); }, 2800);
+    // she looms after
+    if(appIdx>=0){ appImgs[appIdx].classList.add('loom'); }
   }
   setInterval(()=>{ if(scareCooldown>0) scareCooldown--; },1000);
-  stage.addEventListener('pointerup', ()=>{ ensureAudio(); if(scareCooldown===0 && Math.random()<0.18) triggerScare(); });
+  stage.addEventListener('pointerup', ()=>{ ensureAudio(); if(scareCooldown===0 && Math.random()<0.16) triggerScare(); });
 
-  // CURSE
-  let curseActive=false, curseUndos=0;
-  const curseCodes = ["XOF-7-13-09","DOA-3-66-01","NULL-VOID-77","RIP-4-EVER","N01-EXIT-90"];
-  const curseFails = ["the code is wrong","she rejects you","you are already marked","too late","the curse only grows","she owns you now"];
+  // CURSE — non-blocking glass card, returns to main screen
+  let curseActive=false, curseUndos=0, curseDismissed=false;
+  const curseCodes=["XOF-7-13-09","DOA-3-66-01","NULL-VOID-77","RIP-4-EVER","N01-EXIT-90"];
+  const curseFails=["the code is wrong","she rejects you","you are already marked","too late","the curse only grows","she owns you now"];
+  function closeCurse(){ if(!curse.classList.contains('on')) return; curse.classList.remove('on'); curseDismissed=true; appPermanent=true; cursedTag.style.opacity='1'; }
   function startCurse(){ if(curseActive) return; curseActive=true; curseUndos=0; curseStamp.style.display='none'; curseUndo.style.display='';
     curseCode.textContent=curseCodes[Math.floor(Math.random()*curseCodes.length)]; curseCd.textContent='lifting in 10';
     curse.classList.add('on'); sting(true); speak("you are cursed forever");
     let n=10; const iv=setInterval(()=>{ n--; if(n>0){ curseCd.textContent='lifting in '+n; } else { clearInterval(iv); showPermanent(); } },1000); curse._iv=iv;
   }
-  function showPermanent(){ curseCd.textContent=''; curseUndo.style.display='none'; curseStamp.style.display='block';
-    curseDesc.innerHTML="there was never a way out.<br>the curse ends only when you do."; sting(true); speak("you can't escape"); screenblood.classList.add('on'); }
+  function showPermanent(){ curseCd.textContent=''; curseUndo.style.display='none'; curseStamp.style.display='block'; curseDesc.innerHTML="there was never a way out.<br>the curse ends only when you do."; sting(true); speak("you can't escape"); screenblood.classList.add('on'); setTimeout(()=>screenblood.classList.remove('on'),2600);
+    setTimeout(closeCurse, 2500); }
   curseUndo.addEventListener('click',(e)=>{ e.stopPropagation(); ensureAudio(); sting(true); speak("you can't escape"); curseUndos++;
     curse._iv && clearInterval(curse._iv);
     curseDesc.innerHTML=curseFails[Math.min(curseUndos-1,curseFails.length-1)];
@@ -422,25 +370,24 @@ const PICS = [
     let n=10; curseCd.textContent='lifting in 10'; curse._iv=setInterval(()=>{ n--; if(n>0){ curseCd.textContent='lifting in '+n; } else { clearInterval(curse._iv); showPermanent(); } },1000);
     document.body.style.filter='invert(1)'; setTimeout(()=>document.body.style.filter='',120);
   });
-  curse.addEventListener('click',(e)=>{ if(e.target===curseUndo) return; ensureAudio(); triggerScare(); });
+  curse.addEventListener('click',(e)=>{ if(e.target===curseUndo) return; ensureAudio(); closeCurse(); });
 
   // LET ME OUT trap
   let leaveClicks=0;
   const leaveTexts=["LET ME OUT","PLEASE","LET ME OUT","I'M SORRY","LET ME OUT","HELP ME","LET ME OUT"];
   const leaveWhisper=["NO.","there is no door","you locked it yourself","no one is outside","she heard you","you're already inside","too late"];
   leaveBtn.addEventListener('click',(e)=>{ e.stopPropagation(); ensureAudio(); leaveClicks++; sting(true); speak("you can't escape");
-    whisperEl.textContent=leaveWhisper[Math.min(leaveClicks-1,leaveWhisper.length-1)]||"NO."; whisperEl.style.opacity='0.95';
-    dreadLevel=Math.min(1,dreadLevel+0.18); if(audioReady) intensify(dreadLevel);
+    whisperEl.textContent=leaveWhisper[Math.min(leaveClicks-1,leaveWhisper.length-1)]||"NO."; whisperEl.style.opacity='.95';
+    dreadLevel=Math.min(1,dreadLevel+0.16); if(audioReady) intensify(dreadLevel);
     document.body.style.filter='invert(1) hue-rotate(200deg)'; setTimeout(()=>document.body.style.filter='',140);
-    watcher.style.bottom=(parseFloat(watcher.style.bottom||'-10')+8)+'%';
-    if(Math.random()<0.6) crawl(Math.random()<0.5?'up':'down');
+    if(Math.random()<0.5) crawl(Math.random()<0.5?'up':'down');
     leaveBtn.textContent=leaveTexts[leaveClicks%leaveTexts.length];
     if(leaveClicks>=7){ leaveBtn.textContent="NO EXIT"; leaveBtn.style.pointerEvents='none'; leaveBtn.style.opacity='0.4'; }
   });
 
   let takeoverActive=false;
-  function showTakeover(){ if(takeoverActive) return; takeoverActive=true; sting(true); speak("you can't escape"); if(Math.random()<0.5) crawl(Math.random()<0.5?'up':'down'); triggerScare(); }
-  setInterval(()=>{ if(seconds>=60 && !takeoverActive && !curseActive && Math.random()<0.5) showTakeover(); },8000);
+  function showTakeover(){ if(takeoverActive||curse.classList.contains('on')) return; takeoverActive=true; sting(true); speak("you can't escape"); if(Math.random()<0.5) crawl(Math.random()<0.5?'up':'down'); triggerScare(); }
+  setInterval(()=>{ if(seconds>=60 && !takeoverActive && !curse.classList.contains('on') && Math.random()<0.5) showTakeover(); },8000);
 
   function makeCard(){ const c=document.createElement('canvas'); c.width=1200; c.height=630; const x=c.getContext('2d');
     x.fillStyle='#000'; x.fillRect(0,0,1200,630); const grad=x.createRadialGradient(600,260,60,600,260,620); grad.addColorStop(0,'rgba(40,0,0,0.5)'); grad.addColorStop(1,'rgba(0,0,0,0)'); x.fillStyle=grad; x.fillRect(0,0,1200,630); x.textAlign='center';
@@ -456,10 +403,10 @@ const PICS = [
   findBtn.addEventListener('click',(e)=>{ e.stopPropagation(); ensureAudio(); triggerScare(); });
 
   let revealed=false;
-  function reveal(){ if(revealed) return; revealed=true; veilOpened=true; veil.style.transition='opacity 0.8s ease'; veil.style.opacity='0'; setTimeout(()=>veil.remove(),850); startScore(); startTimer(); recEl.style.display='block'; tcEl.style.display='block'; }
+  function reveal(){ if(revealed) return; revealed=true; veilOpened=true; veil.style.opacity='0'; setTimeout(()=>veil.remove(),900); startScore(); startTimer(); recEl.style.opacity='1'; tcEl.style.opacity='1'; }
   veil.addEventListener('click',reveal);
   veil.addEventListener('touchstart',ensureAudio,{passive:true});
-  document.addEventListener('mousemove',()=>{ if(Math.random()>0.985){ document.body.style.filter='hue-rotate('+(Math.random()*40-20)+'deg) contrast(1.2)'; setTimeout(()=>document.body.style.filter='',90); } });
+  document.addEventListener('mousemove',()=>{ if(Math.random()>0.985){ document.body.style.filter='hue-rotate('+(Math.random()*40-20)+'deg) contrast(1.15)'; setTimeout(()=>document.body.style.filter='',90); } });
   setTimeout(()=>{ if(veilOpened && !curseActive) startCurse(); }, 6000);
 </script>
 </body>
